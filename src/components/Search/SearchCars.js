@@ -68,7 +68,7 @@ const SearchCars = (props) => {
                 if (car.images && car.images.length > 0) {
                     const imageApi = car.images[0];
                     try {
-                        const response = await fetch(`http://localhost:8386${imageApi}`);
+                        const response = await fetch(`http://localhost:9999${imageApi}`);
                         if (response.ok) {
                             const blob = await response.blob();
                             urls[car.id] = URL.createObjectURL(blob); // Lưu URL blob

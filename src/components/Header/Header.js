@@ -106,7 +106,7 @@ const Header = () => {
                       variant="light btn-login"
                       onClick={() => handleLogin()}
                     >
-                      Sigh in
+                      Sign in
                     </Button>
                     <Button
                       variant="outline-dark btn-register"
@@ -138,7 +138,7 @@ const Header = () => {
                       <NavDropdown.Item onClick={handleWallet}>
                         My Wallet
                       </NavDropdown.Item>
-                      {account.role.name === "OWNER" ? (
+                      {account.role.name === "ADMIN" ? (
                         <>
                           <NavDropdown.Item onClick={handleMyCars}>
                             My Cars

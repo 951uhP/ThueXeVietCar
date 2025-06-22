@@ -84,7 +84,7 @@ instance.interceptors.response.use(
         return new Promise(async (resolve, reject) => {
           // Gửi request làm mới token
           await axios
-            .get("http://localhost:8386/auth/refresh", {
+            .get("http://localhost:9999/auth/refresh", {
               withCredentials: true,
             })
             .then((res) => {
