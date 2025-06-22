@@ -1,0 +1,97 @@
+.my-report {
+  padding: 20px;
+  .container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    overflow: hidden;
+  }
+  .average-rating {
+    text-align: center;
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 3rem;
+      color: #4caf50;
+    }
+
+    .stars {
+      .star {
+        font-size: 1.5rem;
+        color: lightgray;
+        &.filled {
+          color: #ffc107;
+        }
+      }
+    }
+  }
+
+  .rating-details {
+    margin-bottom: 20px;
+
+    .rating-filter {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      button {
+        min-width: 100px;
+      }
+    }
+  }
+
+  .feedback-list {
+    .feedback-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+
+      .feedback-header {
+        .avatar {
+          font-size: 2rem;
+          margin-right: 10px;
+        }
+
+        .user-info h6 {
+          margin: 0;
+          font-weight: bold;
+        }
+
+        .rating .star {
+          font-size: 1.2rem;
+          color: lightgray;
+          &.filled {
+            color: #ffc107;
+          }
+        }
+      }
+
+      .feedback-comment {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #555;
+      }
+
+      .car-info {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #333;
+      }
+    }
+  }
+  .btn-detail {
+    background-color: transparent;
+    color: #191a1b;
+    border: solid 1px;
+    border-color: #191a1b;
+  }
+  .btn-detail:hover {
+    background-color: #191a1b;
+    color: #fff;
+    border-color: #191a1b;
+  }
+  .btn-detail:active {
+    background-color: #191a1b;
+  }
+}

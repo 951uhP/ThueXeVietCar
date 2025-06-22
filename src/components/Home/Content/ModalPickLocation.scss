@@ -1,0 +1,29 @@
+.btn-loca {
+  background-color: #ffc107;
+  color: black;
+  border: 1px solid black;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+.btn-loca:hover {
+  background-color: #000000;
+  color: rgb(255, 255, 255);
+  border: 1pt solid #333;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
+.btn-date {
+  background-color: white;
+  color: #333;
+  border: 1pt solid #333;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+.btn-date:hover {
+  background-color: #333;
+  border: solid 1pt #333;
+}

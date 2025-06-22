@@ -1,0 +1,47 @@
+.booking-detail {
+  .car-info {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+
+    .car-image {
+      max-width: 100%;
+
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    h4 {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .status-available {
+      color: green;
+      font-weight: bold;
+    }
+  }
+
+  h5 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  button {
+    min-width: 120px;
+  }
+}

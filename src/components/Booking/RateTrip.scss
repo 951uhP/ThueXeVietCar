@@ -1,0 +1,89 @@
+.rate-a-trip {
+  max-width: 400px;
+  margin: 20px auto;
+  text-align: center;
+
+  .stars {
+    margin-bottom: 15px;
+
+    .star {
+      font-size: 2rem;
+      color: #ddd;
+      cursor: pointer;
+      margin: 0 5px;
+      transition: color 0.3s;
+
+      &.selected {
+        color: #ffc107; // Màu vàng khi được hover hoặc chọn
+      }
+
+      &:hover {
+        color: #ffc107; // Màu vàng khi hover
+      }
+    }
+  }
+
+  .review-box {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    resize: none;
+
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+
+    .btn {
+      width: 48%;
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &.skip-btn {
+        background-color: #f8f9fa;
+        color: #6c757d;
+      }
+
+      &.submit-btn {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      &:hover {
+        opacity: 0.9;
+      }
+      &.btn-skip {
+        background-color: transparent;
+        color: #191a1b;
+        border: solid 1px;
+        border-color: #191a1b;
+      }
+      &.btn-skip:hover {
+        background-color: #191a1b;
+        color: #fff;
+      }
+
+      &.btn-send {
+        background-color: #f1ac00;
+        color: rgb(255, 255, 255);
+        border: none;
+      }
+      &.btn-send:hover {
+        background-color: #b88400;
+        color: rgb(255, 255, 255);
+      }
+    }
+  }
+}

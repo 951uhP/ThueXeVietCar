@@ -1,0 +1,30 @@
+.footer-container.container {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1rem;
+
+  .footer-title,
+  .footer-link {
+    color: #242420;
+  }
+
+  .footer-title {
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+
+  .nav {
+    gap: 18px;
+    grid-gap: 18px;
+
+    .nav-link {
+      padding: 0;
+      color: #6f6f6f;
+
+
+      &:hover {
+        color: #242420;
+      }
+    }
+  }
+}

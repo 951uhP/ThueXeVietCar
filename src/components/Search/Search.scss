@@ -1,0 +1,11 @@
+.search-page-container {
+    .search-section {
+        margin-top: 50px;
+        margin-bottom: 50px;
+
+        .datepicker {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}

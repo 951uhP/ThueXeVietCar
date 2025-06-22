@@ -1,0 +1,131 @@
+// Container cho bảng
+.table-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  overflow: hidden;
+
+  .row-item {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1rem 0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+    .image-column {
+      flex: 1;
+      padding-right: 1rem;
+
+      .car-image {
+        width: 120%;
+        height: auto;
+        border-radius: 10px;
+        object-fit: cover;
+      }
+    }
+
+    .details-column {
+      flex: 3;
+      padding-right: 1rem;
+      padding-left: 1rem;
+      margin-left: 50px;
+
+      .car-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .car-info {
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+
+        strong {
+          font-weight: bold;
+        }
+
+        .status-confirmed {
+          color: green;
+          font-weight: bold;
+        }
+
+        .status-in-progress {
+          color: orange;
+          font-weight: bold;
+        }
+
+        .status-pending {
+          color: #00b9f1;
+          font-weight: bold;
+        }
+
+        .status-completed {
+          color: blue;
+          font-weight: bold;
+        }
+
+        .status-cancelled {
+          color: red;
+          font-weight: bold;
+        }
+      }
+    }
+
+    // Cột chứa nút hành động
+    .action-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      button {
+        width: 180px;
+        height: auto;
+        margin: 0.5rem 0;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+
+        &.btn-detail {
+          background-color: transparent;
+          color: #191a1b;
+          border: solid 1px;
+          border-color: #191a1b;
+        }
+        &.btn-detail:hover {
+          background-color: #191a1b;
+          color: #fff;
+        }
+
+        &.btn-pickup {
+          background-color: #0c8f00;
+          color: rgb(255, 255, 255);
+          border: none;
+        }
+        &.btn-pickup:hover {
+          background-color: #096800;
+          color: rgb(255, 255, 255);
+        }
+        &.btn-return {
+          background-color: #f1ac00;
+          color: rgb(255, 255, 255);
+          border: none;
+        }
+        &.btn-return:hover {
+          background-color: #b88400;
+          color: rgb(255, 255, 255);
+        }
+
+        &cancel {
+          background-color: #dc3545;
+          color: #fff;
+          border: none;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+.owner-list-car {
+  .car-image {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+  }
+
+  .carousel-image {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .no-rating {
+    color: #aaa;
+  }
+
+  .status-available {
+    color: green;
+    font-weight: bold;
+  }
+
+  .status-stopped {
+    color: red;
+    font-weight: bold;
+  }
+
+  .primary-button {
+    background-color: #ffc107;
+    color: black;
+    border: none;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+  }
+  .primary-button:hover {
+    background-color: #000000;
+    color: rgb(255, 255, 255);
+    border: 1pt solid #333;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+  }
+
+  .secondary-button {
+    background-color: white;
+    color: #333;
+    border: 1pt solid #333;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+  }
+  .secondary-button:hover {
+    background-color: #333;
+    border: solid 1pt #333;
+  }
+}

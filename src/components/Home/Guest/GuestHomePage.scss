@@ -1,0 +1,125 @@
+.guest-homepage {
+  font-family: 'Manrope', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-section {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+
+  height: 88vh;
+  box-sizing: border-box;
+
+  .left-section,
+  .right-section {
+    flex: 0 0 50%;
+    padding: 2rem;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .left-section {
+    background-color: #000000;
+  }
+
+  .right-section {
+    background-color: #ffc107;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  button {
+
+    margin-top: 0.5rem;
+    font-weight: bold;
+    color: #000000;
+    background-color: #ffc107;
+    border: 2px solid #000000;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #e0a800;
+  }
+}
+
+.main-section {
+  flex: 1;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.why-us-section,
+.testimonials-section,
+.location-section {
+  background-color: #f0f0f0;
+  color: #000000;
+  padding: 2rem 0;
+  box-sizing: border-box;
+  margin: 1rem 0;
+}
+
+h3 {
+  color: #ffc107;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  font-size: 1.8rem;
+}
+
+.card {
+  border: none;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #000000;
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.card img.rounded-circle {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 1rem;
+}
+
+.card .icon {
+  font-size: 2.5rem;
+  color: #ffc107;
+  margin-bottom: 1rem;
+}
+
+.card .card-body {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.card .card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}

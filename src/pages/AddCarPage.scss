@@ -1,0 +1,63 @@
+.booking-page {
+  max-width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  min-height: 600px;
+  transition: 0.5s ease;
+}
+
+/* Nội dung từng step */
+.step-content {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-top: 20px;
+  min-height: 400px;
+  transition: 0.5s ease;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* Booking info */
+.booking-info {
+  max-width: 100%;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* Progress Bar Customization */
+.progress {
+  height: 80px;
+  border-radius: 15px;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #f1ac00, #f1ac00);
+  transition: width 0.5s ease;
+}
+
+.progress-bar-label {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  top: 0px;
+  color: black;
+  font-weight: bold;
+}
+
+.d-flex.justify-content-between-booking {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  padding: 0 20px;
+}

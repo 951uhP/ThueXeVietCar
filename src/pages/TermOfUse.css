@@ -1,0 +1,112 @@
+/* Content styling */
+.term-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề chính */
+.term-h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: #004c93;
+  font-weight: bold;
+}
+
+/* Tiêu đề phụ (h2) */
+/* CSS cho thẻ h2 */
+.term-h2 {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #000000;
+  margin-top: 40px;
+  margin-bottom: 20px;
+
+  width: 100%; /* Đảm bảo thẻ h2 chiếm toàn bộ chiều rộng */
+  box-sizing: border-box; /* Đảm bảo padding không làm thay đổi chiều rộng */
+  border-bottom: 2px solid #004c93; /* Thêm đường viền dưới thẻ h2 */
+}
+
+/* Tiêu đề nhỏ (h4) cho các phần cụ thể */
+.term-h4 {
+  font-size: 20px;
+  margin-top: 25px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Đoạn văn (p) */
+.term-p {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-top: 10px;
+  color: #555;
+}
+
+/* Các danh sách (li) */
+.term-ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.term-ul .term-li {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 10px;
+  color: #555;
+  padding-left: 20px;
+  position: relative;
+}
+
+.term-ul .term-li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #004c93;
+  font-size: 18px;
+}
+
+/* Khoảng cách giữa các đoạn và tiêu đề */
+h1,
+h2,
+h4,
+p {
+  margin-bottom: 10px;
+}
+
+/* Các liên kết trong nội dung */
+.term-a {
+  color: #004c93;
+  text-decoration: none;
+}
+
+.term-a:hover {
+  text-decoration: underline;
+}
+
+/* Đảm bảo rằng văn bản không bị quá dài trên màn hình nhỏ */
+@media (max-width: 768px) {
+  .term-main {
+    padding: 20px;
+  }
+
+  .term-h1 {
+    font-size: 28px;
+  }
+
+  .term-h2 {
+    font-size: 24px;
+  }
+
+  .term-h4 {
+    font-size: 18px;
+  }
+
+  .term-p {
+    font-size: 14px;
+  }
+}
