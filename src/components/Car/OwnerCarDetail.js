@@ -16,7 +16,7 @@ function OwnerCarDetail() {
   const fetchImages = async (imageApis) => {
     try {
       const imagePromises = imageApis.map((api) =>
-        fetch(`http://localhost:8386${api}`).then((res) => {
+        fetch(`http://localhost:9999${api}`).then((res) => {
           if (res.ok) {
             return res.blob();
           }
