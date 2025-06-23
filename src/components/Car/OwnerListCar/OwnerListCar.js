@@ -78,15 +78,17 @@ const OwnerListCar = (props) => {
       const urls = {};
       for (const car of cars) {
         if (car.images && car.images.length > 0) {
-          const imageApi = car.images[0];
-          try {
-            const response = await fetch(`http://localhost:8386${imageApi}`);
-            if (response.ok) {
-              const blob = await response.blob();
-              urls[car.id] = URL.createObjectURL(blob);
+          urls[car.id] = [];
+          for (const imageApi of car.images) {
+            try {
+              const response = await fetch(`http://localhost:9999${imageApi}`);
+              if (response.ok) {
+                const blob = await response.blob();
+                urls[car.id].push(URL.createObjectURL(blob));
+              }
+            } catch (error) {
+              console.error(`Error fetching image for car ${car.id}:`, error);
             }
-          } catch (error) {
-            console.error(`Error fetching image for car ${car.id}:`, error);
           }
         }
       }
@@ -96,7 +98,7 @@ const OwnerListCar = (props) => {
     fetchImages();
 
     return () => {
-      Object.values(imageUrls).forEach((url) => URL.revokeObjectURL(url));
+      Object.values(imageUrls).flat().forEach((url) => URL.revokeObjectURL(url));
     };
   }, [cars]);
 
@@ -293,10 +295,13 @@ const OwnerListCar = (props) => {
                   <Row className="align-items-center">
                     <Col md={6} className="d-flex justify-content-center">
                       <Carousel>
-                        {car.images.map((img, index) => (
+                        {(imageUrls[car.id] && imageUrls[car.id].length > 0
+                          ? imageUrls[car.id]
+                          : ["default-placeholder.png"]
+                        ).map((imgUrl, index) => (
                           <Carousel.Item key={index}>
                             <img
-                              src={img}
+                              src={imgUrl}
                               alt={`Car ${index + 1}`}
                               style={{
                                 height: "200px",
