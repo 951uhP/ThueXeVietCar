@@ -130,7 +130,7 @@ const SearchCars = (props) => {
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h4>Search Results</h4>
-                    <p>There're 4 cars that are available for you!</p>
+                    <p>There're {cars.length} cars that are available for you!</p>
                 </div>
                 <div className="d-flex gap-2">
                     <Button

@@ -20,6 +20,9 @@ const SearchPage = () => {
 
     // Gọi API giả lập với thông tin tìm kiếm
     const fetchCar = async (page) => {
+        // Không gọi API nếu page vượt quá pageCount
+        if (pageCount && page > pageCount) return;
+
         const response = await getSearchCarsPaginate(
             searchParams.get("pickupDate"),
             searchParams.get("dropoffDate"),
@@ -49,9 +52,10 @@ const SearchPage = () => {
         setDropoffDate(searchParams.get("dropoffDate"));
         setLocation(searchParams.get("location"));
 
+        setCurrentPage(1); // Reset về trang 1 khi search mới
         console.log(searchParams.get("pickupDate"));
-        console.log(dropoffDate);
-        console.log(location);
+        console.log(searchParams.get("dropoffDate"));
+        console.log(searchParams.get("location"));
 
         fetchCar(1);
     }, [searchParams]);

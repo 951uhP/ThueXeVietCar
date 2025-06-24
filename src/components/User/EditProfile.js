@@ -60,6 +60,7 @@ const EditProfile = () => {
             phoneNo: response.data.phoneNo || "",
             email: response.data.email || "",
           });
+          console.log("Response data:", basicInfo);
           setDetails({
             nationalIdNo: response.data.nationalIdNo || "",
             drivingLicense: response.data.drivingLicense || "",
@@ -120,6 +121,7 @@ const EditProfile = () => {
     try {
       if (section === "basic" || section === "details") {
         const payload = section === "basic" ? basicInfo : details;
+        console.log("Payload to save:", basicInfo, details);
         const response = await updateProfile(userId, basicInfo, details);
 
         if (response.statusCode === 200) {

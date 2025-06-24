@@ -19,7 +19,7 @@ function CarDetails() {
   const fetchImages = async (imageApis) => {
     try {
       const imagePromises = imageApis.map((api) =>
-        fetch(`http://localhost:8386${api}`).then((res) => {
+        fetch(`http://localhost:9999${api}`).then((res) => {
           if (res.ok) {
             return res.blob();
           }
@@ -163,15 +163,15 @@ function CarDetails() {
                 </tr>
                 <tr>
                   <td>Production year:</td>
-                  <td>{carDetail.year}</td>
+                  <td>{carDetail.productionYears}</td>
                   <td>No. of seats:</td>
-                  <td>{carDetail.seats}</td>
+                  <td>{carDetail.numberOfSeats}</td>
                 </tr>
                 <tr>
                   <td>Transmission:</td>
-                  <td>{carDetail.transmission}</td>
+                  <td>{carDetail.transmissionType}</td>
                   <td>Fuel:</td>
-                  <td>{carDetail.fuel}</td>
+                  <td>{carDetail.fuelType}</td>
                 </tr>
               </tbody>
             </Table>
@@ -229,12 +229,15 @@ function CarDetails() {
               <p>
                 <strong>Term of use:</strong>
               </p>
-              {/* {carDetail.terms.map((term, index) => (
-                <div key={index}>
-                  <input type="checkbox" checked={term.checked} disabled />{" "}
-                  {term.text}
-                </div>
-              ))} */}
+              {carDetail.termsOfUse &&
+                carDetail.termsOfUse
+                  .split(",")
+                  .map((term, idx) => (
+                    <div key={idx}>
+                      <input type="checkbox" checked disabled />{" "}
+                      {term.trim()}
+                    </div>
+                  ))}
             </div>
           </Tab>
         </Tabs>
