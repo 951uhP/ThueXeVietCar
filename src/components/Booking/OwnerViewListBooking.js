@@ -31,9 +31,7 @@ function OwnerViewListBooking() {
       currency: "VND",
     }).format(amount);
   };
-  const handleRefund = async () => {
-
-  };
+  const handleRefund = async () => {};
   const handleConfirmDeposit = async (bookingId) => {
     try {
       await confirmDeposit(bookingId);
@@ -148,7 +146,7 @@ function OwnerViewListBooking() {
     setType(event.target.name);
     setBookingId(bookingId);
     setShowModalPayment(true);
-  }
+  };
 
   // Pending Deposit - sau khi tạo booking - Cancel
   // Deposit Paid - sau khi renter trả tiền - Cancel
@@ -348,7 +346,11 @@ function OwnerViewListBooking() {
                 <div className="image-column">
                   {item.car?.images?.[0] ? (
                     <img
-                      src={item.car.images[0]}
+                      src={
+                        item.car.images[0].startsWith("http")
+                          ? item.car.images[0]
+                          : `http://localhost:9999${item.car.images[0]}`
+                      }
                       alt={item.car.name || "Car"}
                       className="car-image"
                     />

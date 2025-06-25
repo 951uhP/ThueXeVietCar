@@ -35,7 +35,9 @@ function MyBooking() {
       alert(`Booking ${bookingId} has been complete!`);
       setData((prevData) =>
         prevData.map((item) =>
-          item.id === bookingId ? { ...item, bookingStatus: "Payment Paid" } : item
+          item.id === bookingId
+            ? { ...item, bookingStatus: "Payment Paid" }
+            : item
         )
       );
       return response;
@@ -82,9 +84,7 @@ function MyBooking() {
       alert(`Booking ${bookingId} has been confirmed Refund!`);
       setData((prevData) =>
         prevData.map((item) =>
-          item.id === bookingId
-            ? { ...item, bookingStatus: "Completed" }
-            : item
+          item.id === bookingId ? { ...item, bookingStatus: "Completed" } : item
         )
       );
     } catch (error) {
@@ -109,12 +109,11 @@ function MyBooking() {
         }
         return;
       }
-
     } catch (error) {
       console.error("Error confirming booking:", error);
       alert("Failed to confirm booking. Please try again.");
     }
-  }
+  };
   useEffect(() => {
     const fetchBookingsAndCars = async () => {
       try {
@@ -184,7 +183,7 @@ function MyBooking() {
     setType(event.target.name);
     setBookingId(bookingId);
     setShowModalPayment(true);
-  }
+  };
 
   // Format số tiền hiển thị
   const formatCurrency = (amount) => {
@@ -405,7 +404,11 @@ function MyBooking() {
                 <div className="image-column">
                   {item.car?.images?.[0] ? (
                     <img
-                      src={item.car.images[0]}
+                      src={
+                        item.car.images[0].startsWith("http")
+                          ? item.car.images[0]
+                          : `http://localhost:9999${item.car.images[0]}`
+                      }
                       alt={item.car.name || "Car"}
                       className="car-image"
                     />
@@ -453,11 +456,7 @@ function MyBooking() {
                   </Row>
                 </div>
                 <div className="action-column">
-                  {renderActionButtons(
-                    item.bookingStatus,
-                    item.id,
-                    "wallet"
-                  )}
+                  {renderActionButtons(item.bookingStatus, item.id, "wallet")}
                 </div>
               </div>
             );
