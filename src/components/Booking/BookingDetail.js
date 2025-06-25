@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import "./BookingDetail.scss";
 
@@ -35,6 +35,19 @@ const BookingDetail = (props) => {
     }).format(amount);
   };
 
+  const toDisplayDate = (isoDate) => {
+    if (!isoDate) return "";
+    const [year, month, day] = isoDate.split("-");
+    return `${day}-${month}-${year}`;
+  };
+
+  const toISODate = (displayDate) => {
+    if (!displayDate) return "";
+    const [day, month, year] = displayDate.split("-");
+    return `${year}-${month}-${day}`;
+  };
+
+  console.log("Request Renter:", requestRenter);
   return (
     <div className="booking-detail">
       <Row className="car-info mb-4">
@@ -72,10 +85,10 @@ const BookingDetail = (props) => {
             <Form.Group controlId="renterDob">
               <Form.Label>Date of Birth:</Form.Label>
               <Form.Control
-                type="date"
+                type="text"
                 required
                 name="dateOfBirth"
-                value={requestRenter.dateOfBirth}
+                value={toDisplayDate(requestRenter.dateOfBirth)}
                 onChange={handleChangeRenter}
               />
             </Form.Group>

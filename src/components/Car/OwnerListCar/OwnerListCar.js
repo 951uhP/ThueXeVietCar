@@ -233,7 +233,11 @@ const OwnerListCar = (props) => {
                   <td>{car.name}</td>
                   <td>
                     <img
-                      src={imageUrls[car.id] || "default-placeholder.png"}
+                      src={
+                        imageUrls[car.id] && imageUrls[car.id].length > 0
+                          ? imageUrls[car.id][0]
+                          : "default-placeholder.png"
+                      }
                       alt={car.name}
                       style={{
                         width: "80px",

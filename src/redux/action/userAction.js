@@ -14,6 +14,7 @@ export const loginUser = (data) => (dispatch) => {
         localStorage.setItem('access_token', access_token);
         localStorage.setItem('user', JSON.stringify(user));
 
+        console.log('User data:', user);
         // Dispatch action để cập nhật Redux Store
         dispatch({
             type: FETCH_USER_LOGIN_SUCCESS,

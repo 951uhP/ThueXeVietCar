@@ -42,9 +42,11 @@ const BookingPage = () => {
     paymentMethod: "VNPAY",
   });
 
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
   const [requestRenter, setRequestRenter] = useState({
     fullName: "",
-    phoneNumber: "",
+    phoneNumber:"",
     dateOfBirth: "",
     drivingLicense: "",
     address: "",
@@ -171,7 +173,7 @@ const BookingPage = () => {
   const fetchImages = async (imageApis) => {
     try {
       const imagePromises = imageApis.map((api) =>
-        fetch(`http://localhost:8386${api}`).then((res) => {
+        fetch(`http://localhost:9999${api}`).then((res) => {
           if (res.ok) {
             return res.blob();
           }
@@ -200,12 +202,21 @@ const BookingPage = () => {
 
         if (response?.statusCode === 200 && response.data) {
           setWallet(response.data?.wallet);
+          // Gán thông tin user vào requestRenter
+          setRequestRenter({
+            fullName: response.data.name || "",
+            phoneNumber: response.data.phoneNo || "",
+            dateOfBirth: response.data.dateOfBirth || "",
+            drivingLicense: response.data.drivingLicense || "",
+            address: response.data.address || "",
+            nationalId: response.data.nationalIdNo || "",
+            email: response.data.email || "",
+          });
         } else {
           console.error("Failed to fetch user detail.");
         }
       } catch (error) {
         console.error("Error fetching user detail:", error);
-      } finally {
       }
     };
 
