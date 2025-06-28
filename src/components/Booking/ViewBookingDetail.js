@@ -246,7 +246,11 @@ function BookingDetails() {
             <div className="d-flex justify-content-between mt-3">
               <Button
                 onClick={() => {
-                  navigate(`/my-booking`);
+                  if (account.role?.name === "ADMIN") {
+                    navigate("/owner-list-booking");
+                  } else {
+                    navigate("/my-booking");
+                  }
                 }}
                 variant="success"
                 style={{
