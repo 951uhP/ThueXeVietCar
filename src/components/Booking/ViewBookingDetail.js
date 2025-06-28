@@ -268,7 +268,11 @@ function BookingDetails() {
               <Button
                 variant="primary"
                 onClick={() => {
-                  navigate(`/car-details/${bookingDetail.carId}`);
+                  if (account.role?.name === "ADMIN") {
+                    navigate(`/owner-car-details/${bookingDetail.carId}`);
+                  } else {
+                    navigate(`/car-details/${bookingDetail.carId}`);
+                  }
                 }}
               >
                 View Details
