@@ -268,104 +268,107 @@ const EditProfile = () => {
 
             {/* Tab Details */}
             <Tab eventKey="details" title="Details">
-              <div className="mt-3">
-                <Form.Group className="mb-3">
-                  <Form.Label>National ID No.:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="nationalIdNo"
-                    value={details.nationalIdNo}
-                    onChange={handleDetailsChange}
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Driving License:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="drivingLicense"
-                    value={details.drivingLicense}
-                    onChange={handleDetailsChange}
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Address:</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="address"
-                    value={details.address}
-                    onChange={handleDetailsChange}
-                  />
-                </Form.Group>
-                <div>
-                  <Button
-                    style={{ marginRight: "10px" }}
-                    className="btn-submit"
-                    variant="secondary"
-                    onClick={() => handleDiscard("details")}
-                  >
-                    Discard Changes
-                  </Button>
-                  <Button
-                    className="btn-submit"
-                    variant="warning"
-                    onClick={() => handleSave("details")}
-                  >
-                    Save Details
-                  </Button>
-                </div>
-              </div>
+              <Table striped bordered hover className="mt-3">
+                <tbody>
+                  <tr>
+                    <td>National ID No.:</td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="nationalIdNo"
+                        value={details.nationalIdNo}
+                        onChange={handleDetailsChange}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Driving License:</td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="drivingLicense"
+                        value={details.drivingLicense}
+                        onChange={handleDetailsChange}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Address:</td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="address"
+                        value={details.address}
+                        onChange={handleDetailsChange}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+              <Button
+                style={{ marginRight: "10px" }}
+                className="btn-submit"
+                variant="secondary"
+                onClick={() => handleDiscard("details")}
+              >
+                Discard Changes
+              </Button>
+              <Button
+                className="btn-submit"
+                variant="warning"
+                onClick={() => handleSave("details")}
+              >
+                Save Details
+              </Button>
             </Tab>
 
             {/* Tab Security */}
             <Tab eventKey="security" title="Security">
-              <div className="mt-3">
-                <p>
-                  <strong>Change Password:</strong>
-                </p>
-                <form>
-                  <div className="mb-3" style={{ width: "50%" }}>
-                    <label htmlFor="newPassword" className="form-label">
-                      New Password
-                    </label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      id="newPassword"
-                      placeholder="Enter new password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                  </div>
-                  <div className="mb-3" style={{ width: "50%" }}>
-                    <label htmlFor="confirmPassword" className="form-label">
-                      Confirm Password
-                    </label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      id="confirmPassword"
-                      placeholder="Confirm new password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                  </div>
-                  {/* <Button
-                    style={{ marginRight: "10px" }}
-                    className="btn-submit"
-                    variant="secondary"
-                    onClick={() => handleDiscard("security")}
-                  >
-                    Discard Changes
-                  </Button> */}
-                  <Button
-                    className="btn-submit"
-                    variant="warning"
-                    onClick={() => handleSave("security")}
-                  >
-                    Save Password
-                  </Button>
-                </form>
-              </div>
+              <Table striped bordered hover className="mt-3" style={{ maxWidth: 600 }}>
+                <tbody>
+                  <tr>
+                    <td style={{ width: "40%" }}>
+                      <label htmlFor="newPassword" className="form-label mb-0">
+                        New Password
+                      </label>
+                    </td>
+                    <td>
+                      <input
+                        type="password"
+                        className="form-control"
+                        id="newPassword"
+                        placeholder="Enter new password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="confirmPassword" className="form-label mb-0">
+                        Confirm Password
+                      </label>
+                    </td>
+                    <td>
+                      <input
+                        type="password"
+                        className="form-control"
+                        id="confirmPassword"
+                        placeholder="Confirm new password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+              <Button
+                className="btn-submit"
+                variant="warning"
+                onClick={() => handleSave("security")}
+              >
+                Save Password
+              </Button>
             </Tab>
           </Tabs>
         </div>

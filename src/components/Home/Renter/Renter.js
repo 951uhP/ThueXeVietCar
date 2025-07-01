@@ -6,7 +6,7 @@ import ModalPickLocation from "../Content/ModalPickLocation";
 import ModalPickDate from "../Content/ModalPickDate";
 import WhyUs from "../Content/WhyUs";
 import LocationSection from "../Content/LocationSection";
-import TestimonialsSection from "../Content/TestimonialsSection";
+import HowItWorks from "../Content/HowItWorks";
 import { useNavigate } from "react-router-dom";
 const Renter = () => {
 
@@ -59,7 +59,7 @@ const Renter = () => {
                 setDropoffDate={setDropoffDate}
             />
             <WhyUs />
-            <TestimonialsSection />
+            <HowItWorks />
             <LocationSection />
         </div>
     )

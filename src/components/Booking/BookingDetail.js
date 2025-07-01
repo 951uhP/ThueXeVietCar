@@ -58,7 +58,7 @@ const BookingDetail = (props) => {
         </Col>
         <Col md={8}>
           <h4>{carDetail.name}</h4>
-          <p>No. of rides: 0</p>
+          <p>Deposit: {carDetail.deposit}</p>
           <p>Price: {formatCurrency(carDetail.basePrice)}/day</p>
           <p>Location: {carDetail.address}</p>
         </Col>

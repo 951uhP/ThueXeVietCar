@@ -164,30 +164,30 @@ function OwnerViewListBooking() {
 
   const renderActionButtons = (status, bookingId, paymentMethod) => {
     switch (status) {
-      case "Deposit Paid":
-        return (
-          <>
-            <Button
-              className="btn-detail"
-              onClick={() => handleConfirmDeposit(bookingId)}
-            >
-              Confirm Deposit
-            </Button>
+      // case "Deposit Paid":
+      //   return (
+      //     <>
+      //       <Button
+      //         className="btn-detail"
+      //         onClick={() => handleConfirmDeposit(bookingId)}
+      //       >
+      //         Confirm Deposit
+      //       </Button>
 
-            <Button
-              onClick={() => handleCancel(bookingId)}
-              className="btn-danger"
-            >
-              Cancel
-            </Button>
-            <Button
-              className="btn-detail"
-              onClick={() => handleBookingDetail(bookingId)}
-            >
-              View details
-            </Button>
-          </>
-        );
+      //       <Button
+      //         onClick={() => handleCancel(bookingId)}
+      //         className="btn-danger"
+      //       >
+      //         Cancel
+      //       </Button>
+      //       <Button
+      //         className="btn-detail"
+      //         onClick={() => handleBookingDetail(bookingId)}
+      //       >
+      //         View details
+      //       </Button>
+      //     </>
+      //   );
       case "Canceled":
         return (
           <Button

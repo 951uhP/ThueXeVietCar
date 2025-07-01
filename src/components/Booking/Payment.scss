@@ -1,0 +1,136 @@
+.payment-page {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem 1rem 1.5rem 1rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+
+  .car-info-card {
+    background: #fffbe6;
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(255,193,7,0.07);
+    .car-title {
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 0.5rem;
+    }
+    .car-meta {
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      .car-price {
+        color: #ff9800;
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+      .car-location {
+        color: #0d6efd;
+        font-size: 1rem;
+        i { margin-right: 4px; }
+      }
+    }
+    .car-status-badge {
+      color: #198754;
+      background: #e6ffe6;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 4px 16px;
+      font-size: 1rem;
+      display: inline-block;
+      margin-top: 8px;
+    }
+  }
+
+  .summary-card {
+    border-radius: 14px;
+    border: none;
+    background: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    h5 {
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 1.08rem;
+      border-bottom: 1px solid #f1f1f1;
+      min-height: 36px;
+      &:last-child {
+        border-bottom: none;
+      }
+      span {
+        &:first-child {
+          flex: 1 1 60%;
+          text-align: left;
+          color: #555;
+          font-weight: 500;
+        }
+        &:last-child {
+          flex: 0 0 40%;
+          text-align: right;
+          color: #222;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+    .total {
+      color: #ff9800;
+      font-weight: 700;
+      font-size: 1.12rem;
+    }
+  }
+
+  .payment-method-card {
+    border-radius: 14px;
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    h5 {
+      font-weight: bold;
+      margin-bottom: 1.2rem;
+      color: #222;
+      i {
+        color: #ffc107;
+        margin-right: 8px;
+      }
+    }
+    .pay-radio {
+      margin-bottom: 1.2rem;
+      .form-check-input:checked {
+        background-color: #ffc107;
+        border-color: #ffc107;
+      }
+      .pay-icon {
+        color: #ff9800;
+        margin-right: 8px;
+        font-size: 1.2rem;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .payment-note {
+    font-style: italic;
+    color: #888;
+    font-size: 1.05rem;
+    i {
+      color: #0d6efd;
+      margin-right: 6px;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .payment-page {
+    padding: 1rem 0.5rem;
+    .car-info-card, .summary-card, .payment-method-card {
+      margin-bottom: 1.2rem;
+    }
+  }
+}

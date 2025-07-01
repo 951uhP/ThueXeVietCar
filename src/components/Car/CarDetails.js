@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Carousel, Tab, Tabs, Table, Button, Container } from "react-bootstrap";
+import { Carousel, Tab, Tabs, Table, Button, Container, Row, Col, Badge } from "react-bootstrap";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { getUserCarsDetail } from "../../service/apiService"; // API service
+import { getUserCarsDetail } from "../../service/apiService";
 import LoadingIcon from "../Loading";
+import "./CarDetails.scss";
 
 function CarDetails() {
   const navigate = useNavigate();
@@ -16,6 +17,13 @@ function CarDetails() {
   const [isLoading, setIsLoading] = useState(true);
   const [imageURLs, setImageURLs] = useState([]);
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
+
   const fetchImages = async (imageApis) => {
     try {
       const imagePromises = imageApis.map((api) =>
@@ -23,7 +31,6 @@ function CarDetails() {
           if (res.ok) {
             return res.blob();
           }
-
           throw new Error("Failed to fetch image");
         })
       );
@@ -52,23 +59,17 @@ function CarDetails() {
 
   useEffect(() => {
     const fetchCarDetail = async () => {
-      console.log(carId);
       setPickupDate(searchParams.get("pickupDate"));
       setDropoffDate(searchParams.get("dropoffDate"));
       setLocation(searchParams.get("location"));
 
       try {
         const response = await getUserCarsDetail(carId);
-        console.log(response.statusCode);
-        console.log(response.data);
-
         if (response && response.statusCode === 200) {
           setCarDetail(response.data);
           if (response.data.images?.length) {
             await fetchImages(response.data.images);
           }
-        } else {
-          console.error("Failed to fetch car details.");
         }
       } catch (error) {
         console.error("Error fetching car details:", error);
@@ -91,114 +92,105 @@ function CarDetails() {
   return (
     <Container>
       <div className="car-details-container">
-        <div className="d-flex justify-content-between">
-          {/* Carousel */}
-          <div style={{ width: "60%", paddingRight: "20px" }}>
-            <Carousel>
-              {imageURLs.length > 0 ? (
-                imageURLs.map((url, index) => (
-                  <Carousel.Item key={index}>
+        <Row>
+          <Col lg={7} md={12}>
+            <div className="car-carousel mb-4">
+              <Carousel>
+                {imageURLs.length > 0 ? (
+                  imageURLs.map((url, index) => (
+                    <Carousel.Item key={index}>
+                      <img
+                        src={url}
+                        alt={`Car Image ${index + 1}`}
+                        onError={(e) => {
+                          e.target.src = "/no-image-available.jpg";
+                        }}
+                      />
+                    </Carousel.Item>
+                  ))
+                ) : (
+                  <Carousel.Item>
                     <img
-                      className="d-block"
-                      src={url}
-                      alt={`Car Image ${index + 1}`}
-                      onError={(e) => {
-                        e.target.src = "/no-image-available.jpg"; // Ảnh dự phòng
-                      }}
+                      src="/no-image-available.jpg"
+                      alt="No Images Available"
                     />
                   </Carousel.Item>
-                ))
-              ) : (
-                <Carousel.Item>
-                  <img
-                    className="d-block"
-                    src="/no-image-available.jpg" // Ảnh mặc định
-                    alt="No Images Available"
-                  />
-                </Carousel.Item>
-              )}
-            </Carousel>
-          </div>
+                )}
+              </Carousel>
+            </div>
+          </Col>
+          <Col lg={5} md={12}>
+            <div className="car-info-panel">
+              <div className="car-title">{carDetail.name}</div>
+              <div className="car-price">
+                {formatCurrency(carDetail.basePrice)}{" "}
+                <span style={{ fontSize: "1rem", fontWeight: 400 }}>/day</span>
+              </div>
+              <div className="car-location">
+                <i className="bi bi-geo-alt-fill"></i>
+                {carDetail.address}
+              </div>
+              <div className="car-status-badge">
+                <i className="bi bi-check-circle-fill"></i> Available
+              </div>
+              <Button className="rent-btn" onClick={handleBooking}>
+                Rent Now
+              </Button>
+            </div>
+          </Col>
+        </Row>
 
-          <div style={{ width: "40%" }}>
-            <h2>{carDetail.name}</h2>
-            <p>
-              Price: <strong>{carDetail.basePrice}/day</strong>
-            </p>
-            <p>
-              Locations: <strong>{carDetail.address}</strong>
-            </p>
-            <p>
-              Status:{" "}
-              <span
-                style={{
-                  color: "green",
-                }}
-              >
-                Available
-              </span>
-            </p>
-            <Button onClick={handleBooking} variant="warning">
-              Rent Now
-            </Button>
-          </div>
-        </div>
-
-        {/* Tabs Section */}
-        <Tabs defaultActiveKey="basic" id="car-details-tabs" className="mt-4">
+        <Tabs defaultActiveKey="basic" id="car-details-tabs" className="mt-4 car-details-tabs">
           <Tab eventKey="basic" title="Basic Information">
-            <Table striped bordered hover className="mt-3">
-              <tbody>
-                <tr>
-                  <td>License plate:</td>
-                  <td>{carDetail.licensePlate}</td>
-                  <td>Color:</td>
-                  <td>{carDetail.color}</td>
-                </tr>
-                <tr>
-                  <td>Brand name:</td>
-                  <td>{carDetail.brand}</td>
-                  <td>Model:</td>
-                  <td>{carDetail.model}</td>
-                </tr>
-                <tr>
-                  <td>Production year:</td>
-                  <td>{carDetail.productionYears}</td>
-                  <td>No. of seats:</td>
-                  <td>{carDetail.numberOfSeats}</td>
-                </tr>
-                <tr>
-                  <td>Transmission:</td>
-                  <td>{carDetail.transmissionType}</td>
-                  <td>Fuel:</td>
-                  <td>{carDetail.fuelType}</td>
-                </tr>
-              </tbody>
-            </Table>
-            <h4 className="mt-4">Documents:</h4>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Name</th>
-                  <th>Note</th>
-                </tr>
-              </thead>
-              <tbody>
-                {carDetail.documents.map((doc, index) => {
-                  const fileName = doc.split("/").pop();
+            <div className="car-info-grid mt-3">
+              <div className="info-item">
+                <span className="info-label">License plate:</span>
+                <span className="info-value">{carDetail.licensePlate}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Color:</span>
+                <span className="info-value">{carDetail.color}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Brand name:</span>
+                <span className="info-value">{carDetail.brand}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Model:</span>
+                <span className="info-value">{carDetail.model}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Production year:</span>
+                <span className="info-value">{carDetail.productionYears}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">No. of seats:</span>
+                <span className="info-value">{carDetail.numberOfSeats}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Transmission:</span>
+                <span className="info-value">{carDetail.transmissionType}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Fuel:</span>
+                <span className="info-value">{carDetail.fuelType}</span>
+              </div>
+            </div>
 
-                  return (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{fileName}</td>
-                      <td>None</td>{" "}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-            <p className="text-muted">
+            <h4 className="mt-4">Documents:</h4>
+            <div className="car-documents-list">
+              {carDetail.documents.map((doc, index) => {
+                const fileName = doc.split("/").pop();
+                return (
+                  <div className="doc-item" key={index}>
+                    <span className="doc-index">{index + 1}.</span>
+                    <span className="doc-name">{fileName}</span>
+                    <span className="doc-note">None</span>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-muted mt-2">
               Note: Documents will be available for viewing after you’ve paid
               the deposit to rent.
             </p>
@@ -209,8 +201,7 @@ function CarDetails() {
                 <strong>Mileage:</strong> {carDetail.mileage} km
               </p>
               <p>
-                <strong>Fuel consumption:</strong> {carDetail.fuelConsumption}{" "}
-                liter/100 km
+                <strong>Fuel consumption:</strong> {carDetail.fuelConsumption} liter/100 km
               </p>
               <p>
                 <strong>Description:</strong>
@@ -221,10 +212,10 @@ function CarDetails() {
           <Tab eventKey="terms" title="Terms of use">
             <div className="mt-3">
               <p>
-                <strong>Base price:</strong> {carDetail.basePrice} VND/Day
+                <strong>Base price:</strong> {formatCurrency(carDetail.basePrice)} VND/Day
               </p>
               <p>
-                <strong>Required Deposit:</strong> {carDetail.deposit} VND
+                <strong>Required Deposit:</strong> {formatCurrency(carDetail.deposit)} VND
               </p>
               <p>
                 <strong>Term of use:</strong>
@@ -234,8 +225,7 @@ function CarDetails() {
                   .split(",")
                   .map((term, idx) => (
                     <div key={idx}>
-                      <input type="checkbox" checked disabled />{" "}
-                      {term.trim()}
+                      <input type="checkbox" checked disabled /> {term.trim()}
                     </div>
                   ))}
             </div>

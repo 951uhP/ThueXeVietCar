@@ -1,3 +1,135 @@
 .big-container {
     background-color: #f6f6f6;
+    min-height: 100vh;
+    padding: 32px 0;
+}
+
+.edit-profile-container {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 24px 24px 24px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+h2 {
+    text-align: center;
+    font-weight: 800;
+    color: #222;
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #ffc107;
+    .nav-link {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #555;
+        border-radius: 8px 8px 0 0;
+        margin-right: 8px;
+        &.active {
+            background: #ffe082 !important;
+            color: #222 !important;
+            border: none;
+            font-weight: bold;
+        }
+    }
+}
+
+.table {
+  background: #f8f9fa;
+  border-radius: 10px;
+  overflow: hidden;
+  th, td {
+    vertical-align: middle !important;
+    font-size: 1.05rem;
+    border: none;
+    padding: 12px 10px;
+  }
+  thead th {
+    background-color: #ffe082;
+    color: #222;
+    font-weight: 700;
+    border-bottom: 2px solid #ffc107;
+  }
+  tbody tr {
+    background: #fffde7;
+    transition: background 0.15s;
+    &:hover {
+      background: #fff9c4;
+    }
+  }
+  tr {
+    border-bottom: 1px solid #eee;
+  }
+  tr:last-child {
+    border-bottom: none;
+  }
+}
+
+.form-control, .form-label, .form-group input, .form-group label {
+    border-radius: 8px;
+    border: 1.5px solid #ffc107;
+    font-size: 1.05rem;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    transition: border 0.2s;
+    &:focus {
+        border: 2px solid #ff9800;
+        box-shadow: 0 2px 8px rgba(255,193,7,0.10);
+    }
+}
+
+.form-label {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-left: 0 !important;
+}
+
+label {
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.btn-submit, .btn-warning, .btn-secondary {
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 0.6rem 1.6rem;
+    font-size: 1.08rem;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(255,193,7,0.10);
+    border: none;
+    transition: background 0.18s, color 0.18s;
+}
+
+.btn-warning, .btn-submit.btn-warning {
+    background: #ffc107;
+    color: #222;
+    &:hover {
+        background: #ff9800;
+        color: #fff;
+    }
+}
+
+.btn-secondary, .btn-submit.btn-secondary {
+    background: #e0e0e0;
+    color: #333;
+    &:hover {
+        background: #bdbdbd;
+        color: #222;
+    }
+}
+
+@media (max-width: 768px) {
+    .edit-profile-container {
+        padding: 12px 2px;
+    }
+    .table {
+        font-size: 0.98rem;
+    }
 }

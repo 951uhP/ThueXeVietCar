@@ -14,7 +14,8 @@ function Register() {
     phone: "",
     newPassword: "",
     confirmPassword: "",
-    userType: "",
+    userType: "RENTER",
+    wallet: 0,
     agreeToTerms: false,
   });
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ function Register() {
     e.preventDefault();
     if (formData.newPassword === formData.confirmPassword) {
       console.log("Signing up with:", formData);
-      let data = await postRegister(formData.email, formData.newPassword, formData.name, formData.phone, formData.userType);
+      let data = await postRegister(formData.email, formData.newPassword, formData.name, formData.phone, formData.userType, formData.wallet);
       console.log(">>> register response: " + data.data)
       if (data && data.statusCode === 201) {
         handleLogin();
@@ -133,26 +134,6 @@ function Register() {
             />
           </div>
         </Form.Group>
-        <div className="select-row">
-          <Form.Check
-            type="radio"
-            label="I want to rent a car"
-            name="userType"
-            value="RENTER"
-            onChange={handleChange}
-            className="mb-2"
-            checked={formData.userType === "RENTER"}
-          />
-          <Form.Check
-            type="radio"
-            label="I am a car owner"
-            name="userType"
-            value="ADMIN"
-            onChange={handleChange}
-            className="mb-3"
-            checked={formData.userType === "ADMIN"}
-          />
-        </div>
         <div className="select-row">
           <Form.Check
             type="checkbox"

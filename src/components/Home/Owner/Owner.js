@@ -3,67 +3,80 @@ import { Row, Col, Card, Button, Container } from "react-bootstrap";
 import "./Owner.scss";
 import { useNavigate } from "react-router-dom";
 const Owner = () => {
-  const benefits = [
+  const navigate = useNavigate();
+  const adminActions = [
     {
-      title: "How the insurance works",
-      icon: "💰",
-      text: "From the minute you hand the keys over till the second you get them back you are covered. Your private insurance is not affected.",
-    },
-    {
-      title: "It's completely free",
-      icon: "🆓",
-      text: "We offer both owners and renters free sign ups. It’s only once a vehicle is rented out that a share is deducted to cover admin and insurance.",
-    },
-    {
-      title: "You decide the price",
-      icon: "✔️",
-      text: "When you list a car you decide the price. We can help with recommendations as to price, but ultimately you decide!",
-    },
-    {
-      title: "Handing over your vehicle",
+      title: "Manage Vehicles",
       icon: "🚗",
-      text: "You arrange the time and location for the exchange of your vehicle with the renter. Both parties will need to agree and sign the vehicle rental sheet before and after key handover.",
+      text: "View, add, edit, or remove vehicles listed on the platform.",
+      route: "/admin/vehicles",
     },
     {
-      title: "You are in charge",
-      icon: "✅",
-      text: "All renters are pre-screened by us to ensure safety and get your approval. If you do not feel comfortable with someone you are able to decline a booking.",
+      title: "Booking Management",
+      icon: "📅",
+      text: "Review and manage all bookings, including approvals and cancellations.",
+      route: "/admin/bookings",
     },
     {
-      title: "Set payment",
-      icon: "💳",
-      text: "We pay you once a month and you can always view how much your car has earned under your user profile.",
+      title: "User Management",
+      icon: "👥",
+      text: "Oversee user accounts, verify renters, and handle owner profiles.",
+      route: "/admin/users",
+    },
+    {
+      title: "Financial Overview",
+      icon: "💰",
+      text: "Track payments, revenue, and generate financial reports.",
+      route: "/admin/finances",
+    },
+    {
+      title: "System Settings",
+      icon: "⚙️",
+      text: "Configure platform settings, insurance policies, and pricing rules.",
+      route: "/admin/settings",
+    },
+    {
+      title: "Support Tickets",
+      icon: "🎧",
+      text: "View and respond to user inquiries and support requests.",
+      route: "/admin/support",
     },
   ];
 
-  const navigate = useNavigate();
-  const handleListCar = () => {
-    navigate("/owner-list-car");
-  }
-
   return (
-    <div className="big-container">
-      <Container className="rent-benefits-section text-center p-4">
-        <h3>Have a car for rent? Don't miss out on your benefit</h3>
+    <div className="admin-dashboard">
+      <Container className="py-5">
+        <h2 className="text-center mb-4">Admin Dashboard</h2>
+        <h5 className="text-center mb-5">Manage your car rental platform efficiently</h5>
         <Row>
-          {benefits.map((benefit, index) => (
-            <Col md={4} key={index} className="p-3">
-              <Card className="h-100">
-                <Card.Body>
-                  <div className="icon mb-3" style={{ fontSize: "2rem" }}>
-                    {benefit.icon}
+          {adminActions.map((action, index) => (
+            <Col md={4} key={index} className="mb-4">
+              <Card className="h-100 shadow-sm">
+                <Card.Body className="text-center">
+                  <div className="icon mb-3" style={{ fontSize: "2.5rem" }}>
+                    {action.icon}
                   </div>
-                  <Card.Title>{benefit.title}</Card.Title>
-                  <Card.Text>{benefit.text}</Card.Text>
+                  <Card.Title>{action.title}</Card.Title>
+                  <Card.Text>{action.text}</Card.Text>
+                  <Button
+                    variant="primary"
+                    className="mt-3"
+                    onClick={() => navigate(action.route)}
+                  >
+                    Go to {action.title}
+                  </Button>
                 </Card.Body>
               </Card>
             </Col>
           ))}
         </Row>
-        <div>
-          <h4>Make money on your car right away</h4>
-          <Button variant="warning" className="btn-owner" size="lg" onClick={handleListCar}>
-            List Your Car Today
+        <div className="text-center mt-4">
+          <Button
+            variant="warning"
+            size="lg"
+            onClick={() => navigate("/admin/reports")}
+          >
+            View System Reports
           </Button>
         </div>
       </Container>

@@ -32,7 +32,7 @@ const Login = () => {
     if (data && data.error === null) {
       //dispatch
      dispatch(loginUser(data.data));
-      toast.success(data.message);
+      toast.success("Login successful!");
 
       // Điều hướng theo role
       const userRole = data.data?.user?.role?.name || data.data?.user?.role;

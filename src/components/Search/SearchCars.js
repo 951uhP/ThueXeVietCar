@@ -13,6 +13,7 @@ import ReactPaginate from "react-paginate";
 import { FiList } from "react-icons/fi";
 import { MdGridOn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import "./SearchCars.scss";
 
 const SearchCars = (props) => {
     const { cars, setCars, pageCount, currentPage, setCurrentPage, fetchCar, pickupDate, dropoffDate, location } = props;
@@ -133,26 +134,6 @@ const SearchCars = (props) => {
                     <p>There're {cars.length} cars that are available for you!</p>
                 </div>
                 <div className="d-flex gap-2">
-                    <Button
-                        style={{
-                            backgroundColor: viewMode === "table" ? "#ffc107" : "white",
-                            color: viewMode === "table" ? "black" : "#333",
-                            borderColor: "#333",
-                        }}
-                        onClick={() => setViewMode("table")}
-                    >
-                        <FiList /> Table View
-                    </Button>
-                    <Button
-                        style={{
-                            backgroundColor: viewMode === "carousel" ? "#ffc107" : "white",
-                            color: viewMode === "carousel" ? "black" : "#333",
-                            borderColor: "#333",
-                        }}
-                        onClick={() => setViewMode("carousel")}
-                    >
-                        <MdGridOn /> Carousel View
-                    </Button>
                     <Dropdown>
                         <Dropdown.Toggle variant="outline-secondary">
                             Sort by
@@ -168,111 +149,45 @@ const SearchCars = (props) => {
                     </Dropdown>
                 </div>
             </div>
-
-            {viewMode === "table" ? (
-                <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Car Name</th>
-                            <th>Image</th>
-                            <th>Price</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Rent</th>
-                            <th>View</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Array.isArray(cars) &&
-                            cars.map((car, index) => (
-                                <tr key={car.id}>
-                                    <td>{index + 1}</td>
-                                    <td>{car.name}</td>
-                                    <td>
-                                        <img
-                                            src={imageUrls[car.id] || "default-placeholder.png"}
-                                            alt={car.name}
-                                            style={{
-                                                width: "80px",
-                                                height: "50px",
-                                                objectFit: "cover",
-                                            }}
-                                        />
-                                    </td>
-                                    <td>{formatCurrency(car.basePrice)}</td>
-                                    <td>{car.address}</td>
-                                    <td>
-                                        <span
-                                            style={styles.available}
-                                        >
-                                            Available
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <Button variant="warning">Rental</Button>
-                                    </td>
-                                    <td>
-                                        <Button
-                                            onClick={() => handleCarDetail(car.id)}
-                                            style={styles.secondaryButton}
-                                        >
-                                            View details
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                    </tbody>
-                </Table>
-            ) : (
-                <Row>
-                    {Array.isArray(cars) &&
-                        cars.map((car) => (
-                            <Col md={12} key={car.id} className="mb-4">
-                                <Card className="p-3">
-                                    <Row className="align-items-center">
-                                        <Col md={6} className="d-flex justify-content-center">
-                                            <Carousel>
-                                                {car.images.map((img, index) => (
-                                                    <Carousel.Item key={index}>
-                                                        <img
-                                                            src={img}
-                                                            alt={`Car ${index + 1}`}
-                                                            style={{
-                                                                height: "200px",
-                                                                objectFit: "cover",
-                                                            }}
-                                                        />
-                                                    </Carousel.Item>
-                                                ))}
-                                            </Carousel>
-                                        </Col>
-                                        <Col md={6} className="d-flex flex-column justify-content-center">
-                                            <h5 className="text-center">{car.name}</h5>
-                                            <p className="text-center">
-                                                <strong>Price:</strong> {car.basePrice}
-                                            </p>
-                                            <p className="text-center">
-                                                <strong>Status:</strong>{" "}
-                                                <span
-                                                    style={
-                                                        car.carStatus === "Available"
-                                                            ? styles.available
-                                                            : car.carStatus === "Booked"
-                                                                ? styles.booked
-                                                                : styles.stopped
-                                                    }
-                                                >
-                                                    {car.carStatus}
-                                                </span>
-                                            </p>
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </Col>
-                        ))}
-                </Row>
-            )}
+            <Row>
+                {Array.isArray(cars) && cars.map((car) => (
+                    <Col md={4} sm={6} xs={12} key={car.id} className="mb-4">
+                        <Card className="car-card">
+                            <Card.Img
+                                variant="top"
+                                src={imageUrls[car.id] || "default-placeholder.png"}
+                                alt={car.name}
+                                className="car-image"
+                            />
+                            <Card.Body className="car-body">
+                                <div className="car-title">{car.name}</div>
+                                <div className="car-location">
+                                    <i className="bi bi-geo-alt-fill"></i>
+                                    {car.address}
+                                </div>
+                                <div className="car-price">
+                                    {formatCurrency(car.basePrice)}
+                                </div>
+                                <div className={`car-status ${
+                                    car.carStatus === "Available"
+                                        ? "available"
+                                        : car.carStatus === "Booked"
+                                        ? "booked"
+                                        : "stopped"
+                                }`}>
+                                    {car.carStatus}
+                                </div>
+                                <Button
+                                    className="car-detail-btn"
+                                    onClick={() => handleCarDetail(car.id)}
+                                >
+                                    View details
+                                </Button>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                ))}
+            </Row>
             <ReactPaginate
                 nextLabel="next >"
                 onPageChange={handlePageClick}

@@ -9,6 +9,7 @@ import {
 } from "../../service/apiService"; // API service
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function MyWallet() {
   const [fromDate, setFromDate] = useState("");
@@ -83,7 +84,7 @@ function MyWallet() {
   // Xử lý tìm kiếm giao dịch
   const handleSearch = () => {
     if (!fromDate || !toDate) {
-      alert("Please select both 'From' and 'To' dates.");
+      Swal.fire("Missing date", "Please select both 'From' and 'To' dates.", "warning");
       return;
     }
 
@@ -91,12 +92,12 @@ function MyWallet() {
     const endDate = new Date(toDate);
 
     if (startDate > endDate) {
-      alert("'From' date cannot be greater than 'To' date.");
+      Swal.fire("Invalid date", "'From' date cannot be greater than 'To' date.", "error");
       return;
     }
 
     if (!Array.isArray(transaction) || transaction.length === 0) {
-      alert("No transactions available for search.");
+      Swal.fire("No data", "No transactions available for search.", "info");
       return;
     }
 
@@ -134,14 +135,16 @@ function MyWallet() {
         <h2 className="balance">{formatCurrency(user?.wallet || 0)}</h2>
         <div className="buttons">
           <Button
+            className="wallet-btn"
             variant="warning"
-            onClick={() => alert("Withdraw feature coming soon!")}
+            onClick={() => Swal.fire("Coming soon!", "Withdraw feature coming soon!", "info")}
           >
             Withdraw
           </Button>
           <Button
+            className="wallet-btn"
             variant="success"
-            onClick={() => alert("Top-up feature coming soon!")}
+            onClick={() => Swal.fire("Coming soon!", "Top-up feature coming soon!", "info")}
           >
             Top-up
           </Button>
@@ -169,14 +172,7 @@ function MyWallet() {
             />
           </Form.Group>
           <Button
-            style={{
-              backgroundColor: "white",
-              color: "#333",
-              border: "1pt solid #333",
-              fontWeight: "bold",
-              padding: "0.5rem 1rem",
-              borderRadius: "5px",
-            }}
+            className="search-btn"
             variant="primary"
             onClick={handleSearch}
           >

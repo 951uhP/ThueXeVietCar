@@ -15,6 +15,7 @@ import LoadingIcon from "../Loading";
 import { useNavigate } from "react-router-dom";
 import SelectPaymentMethodModal from "./SelectPaymentMethodModal";
 import { toast } from "react-toastify";
+import FeedbackForm from "../Feedback/FeedbackForm";
 
 function MyBooking() {
   const [data, setData] = useState([]);
@@ -24,6 +25,8 @@ function MyBooking() {
   const [paymentMethod, setPaymentMethod] = useState("vnpay");
   const [bookingId, setBookingId] = useState("");
   const [type, setType] = useState("Deposit");
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
 
   const handleBookingDetail = (bookingId) => {
     navigate(`/booking-detail/${bookingId}`);
@@ -208,7 +211,7 @@ function MyBooking() {
   //confirm pick up
   // pending payment
 
-  const renderActionButtons = (status, bookingId, paymentMethod) => {
+  const renderActionButtons = (status, bookingId, paymentMethod, renterId, carId) => {
     switch (status) {
       case "Pending Deposit":
         return (
@@ -323,12 +326,31 @@ function MyBooking() {
         );
       case "Completed":
         return (
-          <Button
-            className="btn-detail"
-            onClick={() => handleBookingDetail(bookingId)}
-          >
-            View details
-          </Button>
+          <Container>
+            <Button
+              className="btn-detail"
+              onClick={() => handleBookingDetail(bookingId)}
+            >
+              View details
+            </Button>
+            <Button
+              variant="success"
+              onClick={() => {
+                setSelectedBookingId(bookingId);
+                setShowFeedback(true);
+              }}
+            >
+              Feedback
+            </Button>
+            {showFeedback && selectedBookingId === bookingId && (
+              <FeedbackForm
+                bookingId={bookingId}
+                renterId={renterId}
+                carId={carId}
+                onSuccess={() => setShowFeedback(false)}
+              />
+            )}
+          </Container>
         );
       case "Confirmed":
         return (
@@ -392,6 +414,10 @@ function MyBooking() {
 
       {isLoading ? (
         <LoadingIcon />
+      ) : data.length === 0 ? (
+        <div className="no-booking-message" style={{textAlign: "center", margin: "40px 0", color: "#888", fontSize: "1.2rem"}}>
+          You have no booking history.
+        </div>
       ) : (
         <div className="table-container">
           {data.map((item) => {
@@ -456,7 +482,7 @@ function MyBooking() {
                   </Row>
                 </div>
                 <div className="action-column">
-                  {renderActionButtons(item.bookingStatus, item.id, "wallet")}
+                  {renderActionButtons(item.bookingStatus, item.id, "wallet", item.renter.id, item.carId)}
                 </div>
               </div>
             );

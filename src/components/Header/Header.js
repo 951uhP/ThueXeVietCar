@@ -38,7 +38,6 @@ const Header = () => {
     navigate("/auth");
   };
   const handleLogout = async () => {
-
     dispatch(logoutUser());
     postLogout();
     navigate("/");
@@ -87,16 +86,17 @@ const Header = () => {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav className="justify-content-end flex-grow-1 pe-3 text-align-center">
-              <NavLink to={"/"} className="nav-link header-link">
-                My Ride
-              </NavLink>
-              <NavLink to={"/"} className="nav-link header-link">
-                Become to Renter
-              </NavLink>
-              <NavLink to={"/"} className="nav-link header-link">
-                About us
-              </NavLink>
-              <div className="vr"></div>
+              {!(isAuthenticated && account.role?.name === "ADMIN") && (
+                <>
+                  <NavLink to={"/"} className="nav-link header-link">
+                    My Ride
+                  </NavLink>
+                  <NavLink to={"/"} className="nav-link header-link">
+                    About us
+                  </NavLink>
+                  <div className="vr"></div>
+                </>
+              )}
             </Nav>
             <Nav>
               {!isAuthenticated ? (
@@ -129,8 +129,7 @@ const Header = () => {
                       title={account.name}
                       id="offcanvasNavbarDropdown-expand-lg"
                       show={showDropdown}
-                      onClick={() => handleToggle(true)}
-                      onMouseLeave={() => handleToggle(false)}
+                      onToggle={(isOpen) => setShowDropdown(isOpen)}
                     >
                       <NavDropdown.Item onClick={handleProfile}>
                         My Profile

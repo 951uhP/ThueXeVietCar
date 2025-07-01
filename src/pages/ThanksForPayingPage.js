@@ -9,12 +9,15 @@ const ThanksForPayingPage = () => {
   const [orderId, setOrderId] = useState("");
 
   // Gửi trạng thái giao dịch về backend để cập nhật
-  const updatePaymentStatus = async (paramsObject) => {
-
+  const updatePaymentStatus = async (bookingId, paramsObject) => {
     try {
-      const response = await postConfirmBooking2(orderId, paramsObject)
-
-      if (response.data.bookingStatus === "Payment Paid" || response.data.bookingStatus === "Deposit Paid" || response.data.bookingStatus === "Refund Paid") {
+      const response = await postConfirmBooking2(bookingId, paramsObject);
+      console.log("Response from updatePaymentStatus:", response);
+      if (
+        response.data.bookingStatus === "Payment Paid" ||
+        response.data.bookingStatus === "Deposit Paid" ||
+        response.data.bookingStatus === "Refund Paid"
+      ) {
         setMessage("Payment status updated successfully!");
         setThanks("Thank You!");
       } else {
@@ -33,22 +36,19 @@ const ThanksForPayingPage = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const paramsObject = {};
+    let bookingId = "";
+
     queryParams.forEach((value, key) => {
       paramsObject[key] = value;
-      if (key.includes("vnp_OrderInfo")) {
-        setOrderId(value);
-      }
-      if (key.includes("wallet_OrderInfo")) {
-        setOrderId(value);
+      if (key.includes("vnp_OrderInfo") || key.includes("wallet_OrderInfo")) {
+        bookingId = value;
       }
     });
 
-
-    updatePaymentStatus(paramsObject);
-
-  }, [message]);
-
-
+    if (bookingId) {
+      updatePaymentStatus(bookingId, paramsObject);
+    }
+  }, []);
 
   return (
     <Container
@@ -67,7 +67,7 @@ const ThanksForPayingPage = () => {
           <Button
             variant="primary"
             onClick={() => {
-              window.location.href = "/list-car";
+              window.location.href = "/my-booking";
             }}
             style={{
               backgroundColor: "#ffc107",

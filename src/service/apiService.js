@@ -30,7 +30,8 @@ const postRegister = (
   userPassword,
   userName,
   userPhone,
-  userRole
+  userRole,
+  userWallet,
 ) => {
   return axios.post(`users/register`, {
     email: userEmail,
@@ -38,6 +39,7 @@ const postRegister = (
     password: userPassword,
     phoneNo: userPhone,
     role: { name: userRole } ,
+    wallet: userWallet,
   });
 };
 
@@ -397,6 +399,15 @@ const getOwnersBooking = () => {
     console.error("Error in getBooking:", error.message);
     throw error;
   }
+};
+export const createFeedback = (bookingId, feedback) => {
+  return axios.post(`/feedbacks/create-feedback?bookingId=${bookingId}`, feedback);
+};
+export const getFeedbackByRenterAndCar = (renterId, carId) => {
+  return axios.get(`/feedbacks/by-renter-and-car?renterId=${renterId}&carId=${carId}`);
+};
+export const updateFeedback = (feedbackId, feedback) => {
+  return axios.put(`/feedbacks/${feedbackId}`, feedback);
 };
 
 export {

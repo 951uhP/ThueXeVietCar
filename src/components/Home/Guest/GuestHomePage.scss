@@ -64,6 +64,60 @@
   }
 }
 
+.header-section-animated {
+  position: relative;
+  min-height: 70vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1500&q=80') center center/cover no-repeat;
+}
+
+.header-bg-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(120deg, rgba(0,0,0,0.7) 60%, rgba(255,193,7,0.7) 100%);
+  z-index: 1;
+}
+
+.header-content-container {
+  position: relative;
+  z-index: 2;
+}
+
+.header-car-icon {
+  width: 90px;
+  height: 90px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+}
+
+.header-cta-btn {
+  margin-top: 2rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  padding: 0.8rem 2.5rem;
+  box-shadow: 0 4px 16px rgba(255,193,7,0.2);
+  border: none;
+}
+
+.header-section-animated h1 {
+  font-size: 2.7rem;
+  font-weight: 800;
+  margin-bottom: 1.2rem;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.header-section-animated p.lead {
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+  color: #fffbe7;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
 .main-section {
   flex: 1;
   padding: 3rem 2rem;
@@ -122,4 +176,56 @@ h3 {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
+}
+
+.testimonials-section .card {
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.testimonials-section .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.how-it-works-section {
+  background: #fff;
+}
+.how-step {
+  transition: transform 0.2s;
+  background: #f8f9fa;
+  border: none;
+  color: #222;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.how-step:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+.how-step-blue {
+  background: linear-gradient(135deg, #e3f0ff 60%, #b6e0fe 100%);
+}
+.how-step-green {
+  background: linear-gradient(135deg, #e6fff4 60%, #b2f2e9 100%);
+}
+.how-step-yellow {
+  background: linear-gradient(135deg, #fffbe6 60%, #ffe9b2 100%);
+}
+.how-icon {
+  font-size: 3rem;
+  color: #0d6efd; // blue mặc định
+}
+.how-step-green .how-icon {
+  color: #198754;
+}
+.how-step-yellow .how-icon {
+  color: #ffc107;
 }

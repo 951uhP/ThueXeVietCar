@@ -16,14 +16,14 @@ import Image8 from '../../../assets/static/image/location/QuyNhon_v2.jpg';
 import LocationCard from './LocationCard';
 
 const cardsData = [
-    { title: "Da Lat", text: "100+ cars", imageUrl: Image1 },
-    { title: "Da Nang", text: "200+ cars", imageUrl: Image2 },
-    { title: "Ha Noi", text: "2200+ cars", imageUrl: Image3 },
-    { title: "Hai Phong", text: "200+ cars", imageUrl: Image4 },
-    { title: "Ho Chi Minh", text: "4000+ cars", imageUrl: Image5 },
-    { title: "Nha Trang", text: "200+ cars", imageUrl: Image6 },
-    { title: "Phu Quoc", text: "100+ cars", imageUrl: Image7 },
-    { title: "Quy Nhon", text: "150+ cars", imageUrl: Image8 }
+    { title: "Da Lat", text: "", imageUrl: Image1 },
+    { title: "Da Nang", text: "", imageUrl: Image2 },
+    { title: "Ha Noi", text: "", imageUrl: Image3 },
+    { title: "Hai Phong", text: "", imageUrl: Image4 },
+    { title: "Ho Chi Minh", text: "", imageUrl: Image5 },
+    { title: "Nha Trang", text: "", imageUrl: Image6 },
+    { title: "Phu Quoc", text: "", imageUrl: Image7 },
+    { title: "Quy Nhon", text: "", imageUrl: Image8 }
 
 ];
 

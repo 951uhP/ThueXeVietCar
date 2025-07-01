@@ -1,14 +1,53 @@
-.big-container {
-  .rent-benefits-section {
-    .btn-owner {
-      margin-top: 10px;
-      color: #fff;
-      border: solid 1px;
-      font-weight: 500;
-
+.admin-dashboard {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  
+  h2 {
+    font-weight: 700;
+    color: #343a40;
+  }
+  
+  h5 {
+    color: #6c757d;
+  }
+  
+  .card {
+    border: none;
+    transition: transform 0.2s;
+    
+    &:hover {
+      transform: translateY(-5px);
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #212529;
+    }
+    
+    .card-text {
+      color: #6c757d;
+    }
+    
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+      
       &:hover {
-        color: #fff;
+        background-color: #0056b3;
+        border-color: #0056b3;
       }
+    }
+  }
+  
+  .btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+    
+    &:hover {
+      background-color: #e0a800;
+      border-color: #d39e00;
     }
   }
 }
