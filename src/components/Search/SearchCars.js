@@ -32,6 +32,12 @@ const SearchCars = (props) => {
         navigate(`/car-details/${carId}?pickupDate=${encodeURIComponent(pickupDate)}&dropoffDate=${encodeURIComponent(dropoffDate)}&location=${encodeURIComponent(location)}`);
     };
 
+    const handleRentNow = (carId) => {
+        navigate(
+            `/booking/${carId}?pickupDate=${encodeURIComponent(pickupDate)}&dropoffDate=${encodeURIComponent(dropoffDate)}&location=${encodeURIComponent(location)}`
+        );
+    };
+
     // Format số tiền hiển thị
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("vi-VN", {
@@ -89,43 +95,6 @@ const SearchCars = (props) => {
         };
     }, [cars]);
 
-    const styles = {
-        image: {
-            width: "150px",
-            height: "100px",
-            objectFit: "cover",
-        },
-        available: {
-            color: "green",
-            fontWeight: "bold",
-        },
-        stopped: {
-            color: "red",
-            fontWeight: "bold",
-        },
-        booked: {
-            color: "blue",
-            fontWeight: "bold",
-        },
-        primaryButton: {
-            width: "170px",
-            backgroundColor: "white",
-            color: "black",
-            border: "1pt solid #333",
-            fontWeight: "bold",
-            padding: "0.5rem ",
-            borderRadius: "5px",
-        },
-        secondaryButton: {
-            backgroundColor: "white",
-            color: "#333",
-            border: "1pt solid #333",
-            fontWeight: "bold",
-            padding: "0.5rem 1rem",
-            borderRadius: "5px",
-        },
-    };
-
     return (
         <div className="owner-list-car py-1">
             <div className="d-flex justify-content-between align-items-center mb-4">
@@ -158,6 +127,7 @@ const SearchCars = (props) => {
                                 src={imageUrls[car.id] || "default-placeholder.png"}
                                 alt={car.name}
                                 className="car-image"
+                                style={{ height: "300px", objectFit: "cover" }}
                             />
                             <Card.Body className="car-body">
                                 <div className="car-title">{car.name}</div>
@@ -177,12 +147,21 @@ const SearchCars = (props) => {
                                 }`}>
                                     {car.carStatus}
                                 </div>
-                                <Button
+                                <div>
+                                    <Button
                                     className="car-detail-btn"
                                     onClick={() => handleCarDetail(car.id)}
                                 >
                                     View details
                                 </Button>
+                                <Button
+                                    className="rent-now-btn mt-2 mx-2"
+                                    variant="success"
+                                    onClick={() => handleRentNow(car.id)}
+                                >
+                                    Rent Now
+                                </Button>
+                                </div>
                             </Card.Body>
                         </Card>
                     </Col>

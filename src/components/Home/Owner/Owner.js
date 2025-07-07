@@ -6,16 +6,16 @@ const Owner = () => {
   const navigate = useNavigate();
   const adminActions = [
     {
-      title: "Manage Vehicles",
+      title: "Manage Cars",
       icon: "🚗",
       text: "View, add, edit, or remove vehicles listed on the platform.",
-      route: "/admin/vehicles",
+      route: "/admin/list-cars",
     },
     {
       title: "Booking Management",
       icon: "📅",
       text: "Review and manage all bookings, including approvals and cancellations.",
-      route: "/admin/bookings",
+      route: "/admin/list-booking-requests",
     },
     {
       title: "User Management",
@@ -27,20 +27,20 @@ const Owner = () => {
       title: "Financial Overview",
       icon: "💰",
       text: "Track payments, revenue, and generate financial reports.",
-      route: "/admin/finances",
+      route: "/admin/wallet",
     },
-    {
-      title: "System Settings",
-      icon: "⚙️",
-      text: "Configure platform settings, insurance policies, and pricing rules.",
-      route: "/admin/settings",
-    },
-    {
-      title: "Support Tickets",
-      icon: "🎧",
-      text: "View and respond to user inquiries and support requests.",
-      route: "/admin/support",
-    },
+    // {
+    //   title: "System Settings",
+    //   icon: "⚙️",
+    //   text: "Configure platform settings, insurance policies, and pricing rules.",
+    //   route: "/admin/settings",
+    // },
+    // {
+    //   title: "Support Tickets",
+    //   icon: "🎧",
+    //   text: "View and respond to user inquiries and support requests.",
+    //   route: "/admin/support",
+    // },
   ];
 
   return (
@@ -50,7 +50,7 @@ const Owner = () => {
         <h5 className="text-center mb-5">Manage your car rental platform efficiently</h5>
         <Row>
           {adminActions.map((action, index) => (
-            <Col md={4} key={index} className="mb-4">
+            <Col md={6} key={index} className="mb-4">
               <Card className="h-100 shadow-sm">
                 <Card.Body className="text-center">
                   <div className="icon mb-3" style={{ fontSize: "2.5rem" }}>
@@ -70,7 +70,7 @@ const Owner = () => {
             </Col>
           ))}
         </Row>
-        <div className="text-center mt-4">
+        {/* <div className="text-center mt-4">
           <Button
             variant="warning"
             size="lg"
@@ -78,7 +78,7 @@ const Owner = () => {
           >
             View System Reports
           </Button>
-        </div>
+        </div> */}
       </Container>
     </div>
   );

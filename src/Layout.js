@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./components/Home/HomePage";
-import User from "./components/User/User";
 
 import App from "./App";
 import TermOfUse from "./pages/TermOfUse";
@@ -10,7 +9,6 @@ import NotFoundPage from "./pages/ErrorPage/NotFoundPage";
 import OwnerPage from "./pages/OwnerPage/OwnerPage";
 import ForgotPass from "./components/Auth/ForgotPass";
 import ResetPass from "./components/Auth/ResetPass";
-import ListCar from "./components/Car/ListCar";
 import AuthPage from "./pages/AuthPage";
 import CarDetails from "./components/Car/CarDetails";
 import EditProfile from "./components/User/EditProfile";
@@ -31,21 +29,21 @@ import Forbidden from "./pages/ErrorPage/Forbidden";
 import SearchPage from "./components/Search/SearchPage";
 import ViewBookingDetail from "./components/Booking/ViewBookingDetail";
 import OwnerViewListBooking from "./components/Booking/OwnerViewListBooking";
+import User from "./components/User/User";
 const Layout = () => {
   return (
     <>
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<HomePage />} />
-          <Route path="/users" element={<User />} />
+          <Route path="/admin/users" element={<User />} />
           <Route path="/terms" element={<TermOfUse />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/403" element={<Forbidden />} />
-          <Route path="/owner" element={<OwnerPage />} />
+          <Route path="/admin" element={<OwnerPage />} />
           <Route path="/forgot" element={<ForgotPass />} />
           <Route path="/reset" element={<ResetPass />} />
-          <Route path="/list-car" element={<ListCar />} />
           <Route path="/auth" element={<AuthPage />} />
           {/* <Route path="/car-details" element={<CarDetails />} /> */}
           <Route path="/car-details/:carId" element={<CarDetails />} />
@@ -55,13 +53,18 @@ const Layout = () => {
           <Route path="/test" element={<BookingDetail />} />
           <Route path="/my-booking" element={<MyBooking />} />
           <Route path="/rate" element={<RateTrip />} />
+          if(account.role?.name === "ADMIN") {
+          <Route path="/admin/wallet" element={<MyWallet />} />
+          } else {
           <Route path="/wallet" element={<MyWallet />} />
+          }
           <Route path="/report" element={<MyReport />} />
           <Route path="/add-car" element={<AddCarPage />} />
           <Route path="/tkspaying" element={<ThanksForPayingPage />} />
-          <Route path="/owner-list-car" element={<OwnerListCarPage />} />
+          <Route path="/admin/list-cars" element={<OwnerListCarPage />} />
+          <Route path="/reset-password" element={<ResetPass />} />
           <Route
-            path="/owner-list-booking"
+            path="/admin/list-booking-requests"
             element={<OwnerViewListBooking />}
           />
           <Route

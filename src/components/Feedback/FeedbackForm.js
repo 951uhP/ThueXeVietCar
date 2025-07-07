@@ -1,31 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
-import { createFeedback, updateFeedback, getFeedbackByRenterAndCar } from "../../service/apiService";
+import { createFeedback, updateFeedback } from "../../service/apiService";
 import { toast } from "react-toastify";
+import { FaStar } from "react-icons/fa";
+import "./FeedbackForm.scss";
 
-const FeedbackForm = ({ bookingId, renterId, carId, onSuccess }) => {
+const FeedbackForm = ({ bookingId, userId, carId, onSuccess, feedback }) => {
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(5);
   const [feedbackId, setFeedbackId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Kiểm tra feedback cũ khi mở form
   useEffect(() => {
-    const fetchFeedback = async () => {
-      try {
-        const res = await getFeedbackByRenterAndCar(renterId, carId);
-        console.log("Fetched feedback:", res);
-        if (res && res.data && res.data.id) {
-          setFeedbackId(res.data.id);
-          setContent(res.data.content);
-          setRating(res.data.rating);
-        }
-      } catch (e) {
-        // Không có feedback cũ, không làm gì
-      }
-    };
-    fetchFeedback();
-  }, [renterId, carId]);
+    if (feedback) {
+      setContent(feedback.content || "");
+      setRating(feedback.rating || 5);
+      setFeedbackId(feedback.id || null);
+    } else {
+      setContent("");
+      setRating(5);
+      setFeedbackId(null);
+    }
+  }, [feedback]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,18 +42,22 @@ const FeedbackForm = ({ bookingId, renterId, carId, onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group>
+    <Form onSubmit={handleSubmit} className="feedback-form">
+      <Form.Group className="mb-3">
         <Form.Label>Rating</Form.Label>
-        <Form.Control
-          as="select"
-          value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}
-        >
-          {[5, 4, 3, 2, 1].map((star) => (
-            <option key={star} value={star}>{star} Star{star > 1 && "s"}</option>
+        <div className="star-rating mb-2">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <FaStar
+              key={star}
+              size={28}
+              className="star"
+              color={star <= rating ? "#ffc107" : "#e4e5e9"}
+              style={{ cursor: "pointer", marginRight: 4 }}
+              onClick={() => setRating(star)}
+              data-testid={`star-${star}`}
+            />
           ))}
-        </Form.Control>
+        </div>
       </Form.Group>
       <Form.Group>
         <Form.Label>Feedback</Form.Label>

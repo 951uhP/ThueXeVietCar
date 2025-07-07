@@ -72,6 +72,9 @@ code {
 
 .app-container {
   font-family: "Manrope", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 
   .btn.btn-warning {
     color: #fff;
@@ -163,4 +166,13 @@ button.btn-search-location.btn.btn-warning {
   width: 40px;
   height: 40px;
   line-height: 40px;
+}
+
+.main-container {
+  flex: 1 0 auto;
+}
+
+footer,
+.footer-container {
+  flex-shrink: 0;
 }

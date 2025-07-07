@@ -11,6 +11,7 @@ import {
 import LoadingIcon from "../Loading";
 import { useNavigate } from "react-router-dom";
 import SelectPaymentMethodModal from "./SelectPaymentMethodModal";
+import Swal from "sweetalert2";
 
 function OwnerViewListBooking() {
   const [data, setData] = useState([]);
@@ -35,7 +36,7 @@ function OwnerViewListBooking() {
   const handleConfirmDeposit = async (bookingId) => {
     try {
       await confirmDeposit(bookingId);
-      alert(`Booking ${bookingId} has been confirmed deposit!`);
+      Swal.fire("Success", `Booking ${bookingId} has been confirmed deposit!`, "success");
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId ? { ...item, bookingStatus: "Confirmed" } : item
@@ -43,13 +44,13 @@ function OwnerViewListBooking() {
       );
     } catch (error) {
       console.error("Error confirming booking:", error);
-      alert("Failed to confirm booking. Please try again.");
+      Swal.fire("Error", "Failed to confirm booking. Please try again.", "error");
     }
   };
   const handleConfirmPayment = async (bookingId) => {
     try {
       await postConfirmPayment(bookingId);
-      alert(`Booking ${bookingId} has been confirmed deposit!`);
+      Swal.fire("Success", `Booking ${bookingId} has been confirmed payment!`, "success");
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId ? { ...item, bookingStatus: "Completed" } : item
@@ -57,7 +58,7 @@ function OwnerViewListBooking() {
       );
     } catch (error) {
       console.error("Error confirming booking:", error);
-      alert("Failed to confirm booking. Please try again.");
+      Swal.fire("Error", "Failed to confirm booking. Please try again.", "error");
     }
   };
   useEffect(() => {
@@ -128,9 +129,8 @@ function OwnerViewListBooking() {
 
   const handleCancel = async (bookingId) => {
     try {
-      // Call
-      cancelBooking(bookingId);
-      alert(`Booking ${bookingId} has been cancelled!`);
+      await cancelBooking(bookingId);
+      Swal.fire("Success", `Booking ${bookingId} has been cancelled!`, "success");
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId ? { ...item, bookingStatus: "Canceled" } : item
@@ -138,7 +138,7 @@ function OwnerViewListBooking() {
       );
     } catch (error) {
       console.error("Error cancelling booking:", error);
-      alert("Failed to cancel booking. Please try again.");
+      Swal.fire("Error", "Failed to cancel booking. Please try again.", "error");
     }
   };
 
@@ -330,83 +330,92 @@ function OwnerViewListBooking() {
         setPaymentMethod={setPaymentMethod}
         type={type}
       />
-      <h1 className="text-center">My Bookings</h1>
+      <h1 className="text-center">List of booking requests</h1>
 
       {isLoading ? (
         <LoadingIcon />
       ) : (
         <div className="table-container">
-          {data.map((item) => {
-            const days = calculateDays(item.startDateTime, item.endDateTime);
-            const basePrice = item.car?.basePrice || 0;
-            const total = calculateTotal(days, basePrice);
-            const deposit = item.car?.deposit || "N/A";
-            return (
-              <div key={item.id} className="row-item">
-                <div className="image-column">
-                  {item.car?.images?.[0] ? (
-                    <img
-                      src={
-                        item.car.images[0].startsWith("http")
-                          ? item.car.images[0]
-                          : `http://localhost:9999${item.car.images[0]}`
-                      }
-                      alt={item.car.name || "Car"}
-                      className="car-image"
-                    />
-                  ) : (
-                    <p>No image available</p>
-                  )}
+          {data.length === 0 ? (
+            <div className="text-center py-5 text-muted">
+              Không có yêu cầu thuê xe nào.
+            </div>
+          ) : (
+            data.map((item) => {
+              const days = calculateDays(item.startDateTime, item.endDateTime);
+              const basePrice = item.car?.basePrice || 0;
+              const total = calculateTotal(days, basePrice);
+              const deposit = item.car?.deposit || "N/A";
+              return (
+                <div key={item.id} className="row-item">
+                  <div className="image-column">
+                    {item.car?.images?.[0] ? (
+                      <img
+                        src={
+                          item.car.images[0].startsWith("http")
+                            ? item.car.images[0]
+                            : `http://localhost:9999${item.car.images[0]}`
+                        }
+                        alt={item.car.name || "Car"}
+                        className="car-image"
+                      />
+                    ) : (
+                      <p>No image available</p>
+                    )}
+                  </div>
+                  <div className="details-column">
+                    <Row>
+                      <Col md={6}>
+                        <h5 className="car-title">
+                          {item.car?.name || "Unknown Car"}
+                        </h5>
+                        <p className="car-info">
+                          <strong>From:</strong>{" "}
+                          {new Date(item.startDateTime).toLocaleString()}
+                        </p>
+                        <p className="car-info">
+                          <strong>To:</strong>{" "}
+                          {new Date(item.endDateTime).toLocaleString()}
+                        </p>
+                        <p className="car-info">
+                          <strong>Number of days:</strong> {days}
+                        </p>
+                      </Col>
+                      <Col md={6}>
+                        <p className="car-info">
+                          <strong>Base price:</strong> {formatCurrency(basePrice)}
+                        </p>
+                        <p className="car-info">
+                          <strong>Total:</strong> {formatCurrency(total)}
+                        </p>
+                        <p className="car-info">
+                          <strong>Deposit:</strong> {formatCurrency(deposit)}
+                        </p>
+                        <p className="car-info">
+                          <strong>Booking No:</strong> {item.id}
+                        </p>
+                        <p
+                          className={`car-info status-${item.bookingStatus.toLowerCase}`}
+                        >
+                          <strong>Status:</strong>
+                          <span className={`status-badge ${item.bookingStatus.replace(/\s/g, '-').toLowerCase()}`}>
+                            {item.bookingStatus}
+                          </span>
+                        </p>
+                      </Col>
+                    </Row>
+                  </div>
+                  <div className="action-column">
+                    {renderActionButtons(
+                      item.bookingStatus,
+                      item.id,
+                      item.paymentMethod
+                    )}
+                  </div>
                 </div>
-                <div className="details-column">
-                  <Row>
-                    <Col md={6}>
-                      <h5 className="car-title">
-                        {item.car?.name || "Unknown Car"}
-                      </h5>
-                      <p className="car-info">
-                        <strong>From:</strong>{" "}
-                        {new Date(item.startDateTime).toLocaleString()}
-                      </p>
-                      <p className="car-info">
-                        <strong>To:</strong>{" "}
-                        {new Date(item.endDateTime).toLocaleString()}
-                      </p>
-                      <p className="car-info">
-                        <strong>Number of days:</strong> {days}
-                      </p>
-                    </Col>
-                    <Col md={6}>
-                      <p className="car-info">
-                        <strong>Base price:</strong> {formatCurrency(basePrice)}
-                      </p>
-                      <p className="car-info">
-                        <strong>Total:</strong> {formatCurrency(total)}
-                      </p>
-                      <p className="car-info">
-                        <strong>Deposit:</strong> {formatCurrency(deposit)}
-                      </p>
-                      <p className="car-info">
-                        <strong>Booking No:</strong> {item.id}
-                      </p>
-                      <p
-                        className={`car-info status-${item.bookingStatus.toLowerCase}`}
-                      >
-                        <strong>Status:</strong> {item.bookingStatus}
-                      </p>
-                    </Col>
-                  </Row>
-                </div>
-                <div className="action-column">
-                  {renderActionButtons(
-                    item.bookingStatus,
-                    item.id,
-                    item.paymentMethod
-                  )}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       )}
     </Container>

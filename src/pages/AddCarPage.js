@@ -100,7 +100,7 @@ const AddCarPage = () => {
   };
 
   const handleCancel = () => {
-    navigate("/owner-list-car");
+    navigate("/admin/list-cars");
   };
 
   const onActiveChange = () => {
@@ -143,7 +143,7 @@ const AddCarPage = () => {
         const cars = response.data;
         console.log(">>> Cars:", cars);
         toast.success(response.message);
-        navigate("/owner-list-car");
+        navigate("/admin/list-cars");
       } else {
         toast.error(response.error);
         console.error("Response does not contain data.");

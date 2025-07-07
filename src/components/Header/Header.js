@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import Logo from "../../assets/logo51.png";
+import Logo from "../../assets/vietcar.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Offcanvas } from "react-bootstrap";
 import Avatar from "../../assets/static/image/avatar-default.jpg";
@@ -34,6 +34,10 @@ const Header = () => {
   const handleLogin = () => {
     navigate("/auth");
   };
+
+  const handleUser = () => {
+    navigate("/admin/users");
+  };
   const handleRegister = () => {
     navigate("/auth");
   };
@@ -49,22 +53,32 @@ const Header = () => {
     navigate("/my-booking");
   };
   const handleWallet = () => {
-    navigate("/wallet");
+    if (account.role?.name === "ADMIN") {
+      navigate("/admin/wallet");
+    } else {
+      navigate("/wallet");
+    }
   };
   const handleReport = () => {
     navigate("/report");
   };
   const handleMyCars = () => {
-    navigate("/owner-list-car");
+    navigate("/admin/list-cars");
   };
   const handleBooking = () => {
-    navigate("/owner-list-booking");
+    navigate("/admin/list-booking-requests");
   };
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid="sm">
-        <NavLink className="navbar-brand" to={"/"}>
+        <NavLink
+          className="navbar-brand"
+          to={ account.role?.name === "ADMIN"
+              ? "/admin"
+              : "/"
+          }
+        >
           <img
             src={Logo}
             width="100%"
@@ -88,8 +102,8 @@ const Header = () => {
             <Nav className="justify-content-end flex-grow-1 pe-3 text-align-center">
               {!(isAuthenticated && account.role?.name === "ADMIN") && (
                 <>
-                  <NavLink to={"/"} className="nav-link header-link">
-                    My Ride
+                  <NavLink to={"/my-booking"} className="nav-link header-link">
+                    My Booking
                   </NavLink>
                   <NavLink to={"/"} className="nav-link header-link">
                     About us
@@ -139,6 +153,9 @@ const Header = () => {
                       </NavDropdown.Item>
                       {account.role.name === "ADMIN" ? (
                         <>
+                        <NavDropdown.Item onClick={handleUser}>
+                            Manage Users
+                          </NavDropdown.Item>
                           <NavDropdown.Item onClick={handleMyCars}>
                             My Cars
                           </NavDropdown.Item>
@@ -146,7 +163,7 @@ const Header = () => {
                             My Report
                           </NavDropdown.Item>
                           <NavDropdown.Item onClick={handleBooking}>
-                            My Booking list
+                            List of booking requests
                           </NavDropdown.Item>
                         </>
                       ) : (

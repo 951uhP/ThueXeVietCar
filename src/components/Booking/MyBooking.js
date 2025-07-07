@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Button, Col, Row } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import "./MyBooking.scss";
 import {
   getUserCarsDetail,
@@ -10,24 +11,30 @@ import {
   confirmPickup,
   getBookingDetail,
   confirmRefund,
+  checkHasFeedback,
 } from "../../service/apiService";
 import LoadingIcon from "../Loading";
 import { useNavigate } from "react-router-dom";
 import SelectPaymentMethodModal from "./SelectPaymentMethodModal";
 import { toast } from "react-toastify";
 import FeedbackForm from "../Feedback/FeedbackForm";
+import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 function MyBooking() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackBookingId, setFeedbackBookingId] = useState(null);
   const navigate = useNavigate();
   const [showModalPayment, setShowModalPayment] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("vnpay");
   const [bookingId, setBookingId] = useState("");
   const [type, setType] = useState("Deposit");
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [selectedBookingId, setSelectedBookingId] = useState(null);
-
+  const [currentFeedback, setCurrentFeedback] = useState(null);
+  const { account } = useSelector((state) => state.user);
+  const [feedbackMap, setFeedbackMap] = useState({});
+  
   const handleBookingDetail = (bookingId) => {
     navigate(`/booking-detail/${bookingId}`);
   };
@@ -35,7 +42,7 @@ function MyBooking() {
     try {
       let response = await completeBooking(bookingId, paymentMethod);
       console.log(response);
-      alert(`Booking ${bookingId} has been complete!`);
+      Swal.fire("Success", `Booking ${bookingId} has been completed!`, "success");
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId
@@ -46,13 +53,13 @@ function MyBooking() {
       return response;
     } catch (error) {
       console.error("Error conplete booking:", error);
-      alert("Failed to complete booking. Please try again.");
+      Swal.fire("Error", "Failed to complete booking. Please try again.", "error");
     }
   };
   const handleConfirm = async (bookingId, paymentMethod) => {
     try {
       await confirmDeposit(bookingId, paymentMethod);
-      alert(`Booking ${bookingId} has been confirmed!`);
+      Swal.fire("Success", `Booking ${bookingId} has been confirmed!`, "success");
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId
@@ -62,13 +69,13 @@ function MyBooking() {
       );
     } catch (error) {
       console.error("Error confirming booking:", error);
-      alert("Failed to confirm booking. Please try again.");
+      Swal.fire("Error", "Failed to confirm booking. Please try again.", "error");
     }
   };
   const handleConfirmPickup = async (bookingId) => {
     try {
       await confirmPickup(bookingId);
-      alert(`Booking ${bookingId} has been confirmed pickup!`);
+      Swal.fire("Success", `Booking ${bookingId} has been confirmed pickup!`, "success");
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId
@@ -78,13 +85,13 @@ function MyBooking() {
       );
     } catch (error) {
       console.error("Error confirming booking:", error);
-      alert("Failed to confirm booking. Please try again.");
+      Swal.fire("Error", "Failed to confirm booking. Please try again.", "error");
     }
   };
   const handleConfirmRefund = async (bookingId) => {
     try {
       await confirmRefund(bookingId);
-      alert(`Booking ${bookingId} has been confirmed Refund!`);
+      Swal.fire("Success", `Booking ${bookingId} has been confirmed Refund!`, "success");
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId ? { ...item, bookingStatus: "Completed" } : item
@@ -92,7 +99,7 @@ function MyBooking() {
       );
     } catch (error) {
       console.error("Error confirming booking:", error);
-      alert("Failed to confirm booking. Please try again.");
+      Swal.fire("Error", "Failed to confirm booking. Please try again.", "error");
     }
   };
 
@@ -105,16 +112,16 @@ function MyBooking() {
       } else {
         let response = await completeBooking(bookingId, paymentMethod);
         if (response.bookingStatus === "Completed") {
-          toast.success("Booking completed");
+          Swal.fire("Success", "Booking completed", "success");
         }
         if (response.bookingStatus === "Pending Refund") {
-          toast.success("Waiting refund");
+          Swal.fire("Success", "Waiting refund", "success");
         }
         return;
       }
     } catch (error) {
       console.error("Error confirming booking:", error);
-      alert("Failed to confirm booking. Please try again.");
+      Swal.fire("Error", "Failed to confirm booking. Please try again.", "error");
     }
   };
   useEffect(() => {
@@ -141,6 +148,20 @@ function MyBooking() {
           });
 
           setData(combinedData);
+
+          // Fetch feedback for completed bookings
+          const completedBookings = combinedData.filter(b => b.bookingStatus === "Completed");
+          const feedbackPromises = completedBookings.map(b =>
+            checkHasFeedback(b.id, account.id)
+              .then(res => ({ bookingId: b.id, feedback: res?.data || null }))
+              .catch(() => ({ bookingId: b.id, feedback: null }))
+          );
+          const feedbackResults = await Promise.all(feedbackPromises);
+          const feedbackObj = {};
+          feedbackResults.forEach(({ bookingId, feedback }) => {
+            feedbackObj[bookingId] = feedback;
+          });
+          setFeedbackMap(feedbackObj);
         } else {
           console.error("Failed to fetch bookings");
           setData([]);
@@ -154,7 +175,7 @@ function MyBooking() {
     };
 
     fetchBookingsAndCars();
-  }, []);
+  }, [account.id]);
 
   const calculateDays = (start, end) => {
     const startDate = new Date(start);
@@ -168,9 +189,8 @@ function MyBooking() {
 
   const handleCancel = async (bookingId) => {
     try {
-      // Call
-      cancelBooking(bookingId);
-      alert(`Booking ${bookingId} has been cancelled!`);
+      await cancelBooking(bookingId);
+      Swal.fire("Success", `Booking ${bookingId} has been cancelled!`, "success");
       setData((prevData) =>
         prevData.map((item) =>
           item.id === bookingId ? { ...item, bookingStatus: "Canceled" } : item
@@ -178,7 +198,7 @@ function MyBooking() {
       );
     } catch (error) {
       console.error("Error cancelling booking:", error);
-      alert("Failed to cancel booking. Please try again.");
+      Swal.fire("Error", "Failed to cancel booking. Please try again.", "error");
     }
   };
 
@@ -211,7 +231,14 @@ function MyBooking() {
   //confirm pick up
   // pending payment
 
-  const renderActionButtons = (status, bookingId, paymentMethod, renterId, carId) => {
+  const handleOpenFeedbackModal = async (bookingId) => {
+    setFeedbackBookingId(bookingId);
+    setShowFeedbackModal(true);
+    // Lấy feedback từ feedbackMap nếu có
+    setCurrentFeedback(feedbackMap[bookingId] || null);
+  };
+
+  const renderActionButtons = (status, bookingId, paymentMethod, userId, carId) => {
     switch (status) {
       case "Pending Deposit":
         return (
@@ -326,7 +353,7 @@ function MyBooking() {
         );
       case "Completed":
         return (
-          <Container>
+          <>
             <Button
               className="btn-detail"
               onClick={() => handleBookingDetail(bookingId)}
@@ -335,22 +362,30 @@ function MyBooking() {
             </Button>
             <Button
               variant="success"
-              onClick={() => {
-                setSelectedBookingId(bookingId);
-                setShowFeedback(true);
-              }}
+              onClick={() => handleOpenFeedbackModal(bookingId)}
             >
-              Feedback
+              {feedbackMap[bookingId] ? "Update Feedback" : "Feedback"}
             </Button>
-            {showFeedback && selectedBookingId === bookingId && (
-              <FeedbackForm
-                bookingId={bookingId}
-                renterId={renterId}
-                carId={carId}
-                onSuccess={() => setShowFeedback(false)}
-              />
-            )}
-          </Container>
+            <Modal
+              show={showFeedbackModal && feedbackBookingId === bookingId}
+              onHide={() => setShowFeedbackModal(false)}
+              centered
+              size="lg"
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Feedback</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <FeedbackForm
+                  bookingId={bookingId}
+                  userId={account.id}
+                  carId={carId}
+                  feedback={feedbackMap[bookingId] || null}
+                  onSuccess={() => setShowFeedbackModal(false)}
+                />
+              </Modal.Body>
+            </Modal>
+          </>
         );
       case "Confirmed":
         return (
@@ -410,12 +445,12 @@ function MyBooking() {
         type={type}
         handleComplete={handleComplete}
       />
-      <h1 className="text-center">My Bookings</h1>
+      <h3 className="text-center">My Bookings</h3>
 
       {isLoading ? (
         <LoadingIcon />
       ) : data.length === 0 ? (
-        <div className="no-booking-message" style={{textAlign: "center", margin: "40px 0", color: "#888", fontSize: "1.2rem"}}>
+        <div className="no-booking-message" style={{ textAlign: "center", margin: "40px 0", color: "#888", fontSize: "1.2rem" }}>
           You have no booking history.
         </div>
       ) : (
@@ -473,16 +508,17 @@ function MyBooking() {
                       <p className="car-info">
                         <strong>Booking No:</strong> {item.id}
                       </p>
-                      <p
-                        className={`car-info status-${item.bookingStatus.toLowerCase}`}
-                      >
-                        <strong>Status:</strong> {item.bookingStatus}
+                      <p className={`car-info status-${item.bookingStatus.toLowerCase}`}>
+                        <strong>Status:</strong>
+                        <span className={`status-badge ${item.bookingStatus.replace(/\s/g, '-').toLowerCase()}`}>
+                          {item.bookingStatus}
+                        </span>
                       </p>
                     </Col>
                   </Row>
                 </div>
                 <div className="action-column">
-                  {renderActionButtons(item.bookingStatus, item.id, "wallet", item.renter.id, item.carId)}
+                  {renderActionButtons(item.bookingStatus, item.id, "wallet", item.userId, item.carId)}
                 </div>
               </div>
             );

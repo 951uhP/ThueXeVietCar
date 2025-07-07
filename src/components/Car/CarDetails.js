@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Carousel, Tab, Tabs, Table, Button, Container, Row, Col, Badge } from "react-bootstrap";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { getUserCarsDetail } from "../../service/apiService";
+import { getUserCarsDetail, getAllFeedBack, getAverageRating } from "../../service/apiService";
 import LoadingIcon from "../Loading";
+import { PiCalculatorBold } from "react-icons/pi";
 import "./CarDetails.scss";
 
 function CarDetails() {
@@ -16,6 +17,8 @@ function CarDetails() {
   const [carDetail, setCarDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [imageURLs, setImageURLs] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -79,6 +82,28 @@ function CarDetails() {
     };
 
     fetchCarDetail();
+
+    // Fetch feedbacks
+    const fetchFeedbacks = async () => {
+      try {
+        const data = await getAllFeedBack(carId);
+        setFeedbacks(Array.isArray(data) ? data : []);
+      } catch (error) {
+        setFeedbacks([]);
+      }
+    };
+    fetchFeedbacks();
+
+    // Fetch average rating
+    const fetchAverageRating = async () => {
+      try {
+        const data = await getAverageRating(carId);
+        setAverageRating(data || null);
+      } catch (error) {
+        setAverageRating(null);
+      }
+    };
+    fetchAverageRating();
   }, [carId]);
 
   if (isLoading) {
@@ -130,10 +155,32 @@ function CarDetails() {
                 <i className="bi bi-geo-alt-fill"></i>
                 {carDetail.address}
               </div>
-              <div className="car-status-badge">
-                <i className="bi bi-check-circle-fill"></i> Available
+              <div className="car-average-rating mb-2">
+                <PiCalculatorBold style={{ fontSize: 22, color: "#ffc107", marginRight: 8 }} />
+                {averageRating ? (
+                  <>
+                    <span style={{ color: "#ffc107", fontSize: 20, fontWeight: 700 }}>
+                      {averageRating.toFixed(1)}
+                    </span>
+                    <span style={{ color: "#ffc107", fontSize: 18, marginLeft: 4 }}>★</span>
+                  </>
+                ) : (
+                  <span className="text-muted">No rating yet</span>
+                )}
               </div>
-              <Button className="rent-btn" onClick={handleBooking}>
+              <div
+                className={
+                  "car-status-badge " +
+                  (carDetail.carStatus === "Available"
+                    ? "available"
+                    : carDetail.carStatus === "Booked"
+                    ? "booked"
+                    : "stopped")
+                }
+              >
+                <i className="bi bi-check-circle-fill"></i> {carDetail.carStatus}
+              </div>
+              <Button className="rent-btn" onClick={handleBooking} disabled={carDetail.carStatus !== "Available"}>
                 Rent Now
               </Button>
             </div>
@@ -184,7 +231,7 @@ function CarDetails() {
                 return (
                   <div className="doc-item" key={index}>
                     <span className="doc-index">{index + 1}.</span>
-                    <span className="doc-name">{fileName}</span>
+                    <a href={doc} className="doc-name" download={fileName}>{fileName}</a>
                     <span className="doc-note">None</span>
                   </div>
                 );
@@ -204,9 +251,15 @@ function CarDetails() {
                 <strong>Fuel consumption:</strong> {carDetail.fuelConsumption} liter/100 km
               </p>
               <p>
+                <strong>Address:</strong> {carDetail.address}
+              </p>
+              <p>
                 <strong>Description:</strong>
               </p>
               <p>{carDetail.description}</p>
+              <p>
+                <strong>Additional Function:</strong> {carDetail.additionalFunctions}
+              </p>
             </div>
           </Tab>
           <Tab eventKey="terms" title="Terms of use">
@@ -228,6 +281,41 @@ function CarDetails() {
                       <input type="checkbox" checked disabled /> {term.trim()}
                     </div>
                   ))}
+            </div>
+          </Tab>
+          <Tab eventKey="feedback" title="Feedback">
+            <div className="mt-3">
+              {feedbacks.length === 0 && (
+                <div className="text-muted">No feedback yet.</div>
+              )}
+              {feedbacks.map((fb, idx) => (
+                <div key={fb.id || idx} className="mb-4 p-3 rounded" style={{ background: "#f8f9fa", border: "1px solid #eee" }}>
+                  <div className="d-flex align-items-center mb-2">
+                    <strong className="me-2">{fb.userName || "User"}</strong>
+                    <span>
+                      {[1,2,3,4,5].map(star => (
+                        <span key={star} style={{ color: star <= fb.rating ? "#ffc107" : "#e4e5e9", fontSize: 18 }}>
+                          ★
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                  <div className="mb-1">{fb.content}</div>
+                  {/* Hiển thị thêm ngày thuê */}
+                  <div className="text-muted" style={{ fontSize: 13 }}>
+                    {fb.bookingStartDate && fb.bookingEndDate && (
+                      <>
+                        <span>
+                          <strong>Rental:</strong> {new Date(fb.bookingStartDate).toLocaleDateString("vi-VN")} - {new Date(fb.bookingEndDate).toLocaleDateString("vi-VN")}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <div className="text-muted" style={{ fontSize: 13 }}>
+                    <strong>Created at:</strong> {fb.date ? new Date(fb.date).toLocaleDateString("vi-VN") : ""}
+                  </div>
+                </div>
+              ))}
             </div>
           </Tab>
         </Tabs>

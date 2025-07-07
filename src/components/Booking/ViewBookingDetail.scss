@@ -1,8 +1,15 @@
 .view-booking-detail-container {
-    min-width: 700px;
+    min-width: 320px;
+    max-width: 100%;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #fffbe6 60%, #f8fafc 100%);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.13);
+    padding: 2.5rem 2rem 2rem 2rem;
 
     .d-flex {
         justify-content: space-between;
+        gap: 2.5rem;
     }
 
     // Carousel styling
@@ -11,133 +18,189 @@
 
         img {
             width: 100%;
-            height: 500px;
-            border-radius: 8px;
+            height: 340px;
+            border-radius: 16px;
             object-fit: cover;
+            box-shadow: 0 2px 16px #ffe08233;
+            background: #f8f9fa;
         }
     }
 
     // Car information
-    .car-info {
-        width: 40%;
+    .car-info,
+    .booking-info {
+        width: 100%;
 
-        h2 {
-            font-size: 24px;
-            color: #333;
+        h2,
+        h4 {
+            font-size: 1.7rem;
+            color: #ff9800;
             font-weight: bold;
+            margin-bottom: 1.2rem;
         }
 
         p {
-            font-size: 16px;
-            margin-bottom: 10px;
+            font-size: 1.08rem;
+            margin-bottom: 0.5rem;
 
             strong {
-                color: #555;
-            }
-        }
-
-        .status {
-            &.available {
-                color: green;
-            }
-
-            &.booked,
-            &.stopped {
-                color: red;
+                color: #2d2f48;
             }
         }
     }
+
+    .status-badge1 {
+            display: inline-block;
+            padding: 0.32em 1.2em;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-left: 0.5rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px #ffe08233;
+            background: #e3e6f3;
+            color: #2d2f48;
+
+            &.awaiting-pickup-confirmation {
+                background: #fff3cd;
+                color: #b88400;
+            }
+
+            &.pending-deposit {
+                background: #cce5ff;
+                color: #004085;
+            }
+
+            &.cancelled,
+            &.canceled {
+                background: #f8d7da;
+                color: #721c24;
+            }
+
+            &.available {
+                background: #d4edda;
+                color: #155724;
+            }
+
+            &.in-progress {
+                background: #ffe082;
+                color: #b88400;
+            }
+
+            &.completed {
+                background: #2be98a;
+                color: #383d41;
+            }
+        }
 
     // Tabs section
     .nav-tabs {
         margin-top: 30px;
 
         .nav-item {
-            a {
-                font-size: 16px;
-                padding: 10px 20px;
+            a,
+            .nav-link {
+                font-size: 1.08rem;
+                padding: 10px 22px;
                 background: #f7f7f7;
-                border-radius: 5px;
+                border-radius: 7px 7px 0 0;
                 margin-right: 5px;
                 transition: background-color 0.3s;
+                color: #444;
+                font-weight: 600;
+                border: none;
+            }
 
-                &:hover {
-                    background-color: #e7e7e7;
-                }
-
-                &.active {
-                    background-color: #ffc107;
-                    color: #fff;
-                    font-weight: bold;
-                }
+            .nav-link.active {
+                background-color: #ffc107;
+                color: #fff;
+                font-weight: bold;
             }
         }
     }
 
     .tab-content {
-        padding: 20px;
+        padding: 24px 10px 10px 10px;
+        background: #fff;
+        border-radius: 0 0 14px 14px;
+        box-shadow: 0 2px 8px #ffe08222;
 
         .table {
             margin-top: 20px;
 
             td {
-                font-size: 14px;
+                font-size: 1.05rem;
                 color: #555;
             }
         }
-
-        .additional-functions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-
-            label {
-                display: flex;
-                align-items: center;
-                font-size: 14px;
-
-                input {
-                    margin-right: 8px;
-                }
-            }
-        }
     }
 
-    // Update button styling
-    .update-button {
-        margin-top: 30px;
-        text-align: center;
+    .booking-actions {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
 
         button {
-            background-color: #ffc107;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-weight: bold;
-            color: #070707;
-            cursor: pointer;
+            min-width: 140px !important;
+            font-weight: 700 !important;
+            font-size: 1.08rem !important;
+            border-radius: 8px !important;
+            border: none !important;
+            box-shadow: 0 2px 8px #ffe08233 !important;
+            transition: background 0.18s, color 0.18s, border 0.18s !important;
 
-            &:hover {
-                background-color: #ffcd39;
+            &.custom-btn-back {
+                background: #ffe082 !important;
+                color: #2d2f48 !important;
+            }
+            &.custom-btn-back:hover {
+                background: #ffd54f !important;
+                color: #fff !important;
+            }
+            &.custom-btn-primary {
+                background: #2196f3 !important;
+                color: #fff !important;
+            }
+            &.custom-btn-primary:hover {
+                background: #1976d2 !important;
+            }
+            &.custom-btn-danger {
+                background: #e53935 !important;
+                color: #fff !important;
+            }
+            &.custom-btn-danger:hover {
+                background: #b71c1c !important;
+            }
+            &.custom-btn-secondary {
+                background: #cfd8dc !important;
+                color: #222 !important;
+            }
+            &.custom-btn-secondary:hover {
+                background: #b0bec5 !important;
+            }
+            &.custom-btn-feedback {
+                background: #4caf50 !important;
+                color: #fff !important;
+            }
+            &.custom-btn-feedback:hover {
+                background: #388e3c !important;
             }
         }
     }
+}
 
-    .terms-of-use {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        margin-top: 10px;
+@media (max-width: 900px) {
+    .view-booking-detail-container {
+        padding: 1rem 0.5rem;
 
-        label {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
+        .d-flex {
+            flex-direction: column;
+            gap: 1.2rem;
+        }
 
-            input {
-                margin-right: 8px;
-            }
+        .carousel img {
+            height: 180px;
         }
     }
 }

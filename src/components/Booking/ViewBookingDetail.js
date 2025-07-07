@@ -9,23 +9,34 @@ import {
   Col,
   Button,
   Carousel,
+  Modal,
 } from "react-bootstrap";
+import SelectPaymentMethodModal from "./SelectPaymentMethodModal";
+import { completeBooking } from "../../service/apiService";
 import {
   cancelBooking,
+  checkHasFeedback,
   getBookingDetail,
   getUserCarsDetail,
   getUsersBooking,
   getUsersDetail,
+  getFeedbackByBookingId,
 } from "../../service/apiService";
 import { useEffect } from "react";
 import LoadingIcon from "../Loading";
 import { useSelector } from "react-redux";
-import "./ViewBookingDetail.scss"
+import "./ViewBookingDetail.scss";
+import Swal from "sweetalert2";
+import FeedbackForm from "../Feedback/FeedbackForm";
 
 function BookingDetails() {
   const [carDetail, setCarDetail] = useState(null);
   const [bookingDetail, setBookingDetail] = useState(null);
-  const { bookingId } = useParams();
+  const [showModalPayment, setShowModalPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("vnpay");
+  const [type, setType] = useState("Deposit");
+  const [bookingId, setBookingId] = useState();
+  const { bookingId: paramBookingId } = useParams();
   const [key, setKey] = useState("bookingInfo");
   const navigate = useNavigate();
   const [imageURLs, setImageURLs] = useState([]);
@@ -34,7 +45,41 @@ function BookingDetails() {
   const [carLoading, setCarLoading] = useState(true);
   const { account } = useSelector((state) => state.user);
   const [user, setUser] = useState(null);
-  const userId = account?.id || localStorage.getItem("userId");
+  const [data, setData] = useState([]);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [userFeedback, setUserFeedback] = useState(null);
+  const [feedback, setFeedback] = useState([]);
+
+  useEffect(() => {
+    if (paramBookingId) setBookingId(paramBookingId);
+  }, [paramBookingId]);
+
+  const handleComplete = async (bookingId, paymentMethod) => {
+    try {
+      let response = await completeBooking(bookingId, paymentMethod);
+      console.log(response);
+      Swal.fire(
+        "Success",
+        `Booking ${bookingId} has been completed!`,
+        "success"
+      );
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === bookingId
+            ? { ...item, bookingStatus: "Payment Paid" }
+            : item
+        )
+      );
+      return response;
+    } catch (error) {
+      console.error("Error conplete booking:", error);
+      Swal.fire(
+        "Error",
+        "Failed to complete booking. Please try again.",
+        "error"
+      );
+    }
+  };
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -42,16 +87,37 @@ function BookingDetails() {
       currency: "VND",
     }).format(amount);
   };
+
+  useEffect(() => {
+    const fetchBookingDetail = async () => {
+      try {
+        const response = await getBookingDetail(bookingId);
+        console.log("Booking detail response:", response);
+        if (response && response.statusCode === 200) {
+          setBookingDetail(response.data);
+          if (response.data.images?.length) {
+            await fetchImages(response.data.images);
+          }
+        } else {
+          console.error("Failed to fetch booking details.");
+        }
+      } catch (error) {
+        console.error("Error fetching booking details:", error);
+      } finally {
+        setBookingLoading(false);
+      }
+    };
+
+    fetchBookingDetail();
+  }, [bookingId]);
   // Fetch thông tin người dùng
   useEffect(() => {
+    if (!bookingDetail?.userId) return;
     const fetchUserDetail = async () => {
       try {
-        const response = await getUsersDetail(userId);
-
+        const response = await getUsersDetail(bookingDetail.userId);
         if (response?.statusCode === 200 && response.data) {
           setUser(response.data);
-        } else {
-          console.error("Failed to fetch user detail.");
         }
       } catch (error) {
         console.error("Error fetching user detail:", error);
@@ -59,9 +125,8 @@ function BookingDetails() {
         setIsUserLoading(false);
       }
     };
-
     fetchUserDetail();
-  }, [userId]);
+  }, [bookingDetail?.userId]);
 
   const fetchImages = async (imageApis) => {
     try {
@@ -86,33 +151,44 @@ function BookingDetails() {
     }
   };
 
-  useEffect(() => {
-    const fetchBookingDetail = async () => {
-      try {
-        const response = await getBookingDetail(bookingId);
-        if (response && response.statusCode === 200) {
-          setBookingDetail(response.data);
-          if (response.data.images?.length) {
-            await fetchImages(response.data.images);
-          }
-        } else {
-          console.error("Failed to fetch booking details.");
+  const handleReturnCar = async (event, bookingId) => {
+    try {
+      let bookingDetail = await getBookingDetail(bookingId);
+      if (bookingDetail.data.totalAmount > bookingDetail.data.deposit) {
+        handleSelectPayment(event, bookingId);
+        return;
+      } else {
+        let response = await completeBooking(bookingId, paymentMethod);
+        if (response.bookingStatus === "Completed") {
+          Swal.fire("Success", "Booking completed", "success");
         }
-      } catch (error) {
-        console.error("Error fetching booking details:", error);
-      } finally {
-        setBookingLoading(false);
+        if (response.bookingStatus === "Pending Refund") {
+          Swal.fire("Success", "Waiting refund", "success");
+        }
+        return;
       }
-    };
+    } catch (error) {
+      console.error("Error confirming booking:", error);
+      Swal.fire(
+        "Error",
+        "Failed to confirm booking. Please try again.",
+        "error"
+      );
+    }
+  };
 
-    fetchBookingDetail();
-  }, [bookingId]);
+  const handleSelectPayment = (event, bookingId) => {
+    setType(event.target.name);
+    setBookingId(bookingId);
+    setShowModalPayment(true);
+  };
 
   useEffect(() => {
     if (bookingDetail?.carId) {
       const fetchCarDetail = async () => {
         try {
           const response = await getUserCarsDetail(bookingDetail.carId);
+          console.log("Car detail response:", response);
           if (response && response.statusCode === 200) {
             setCarDetail(response.data);
             if (response.data.images?.length) {
@@ -132,6 +208,50 @@ function BookingDetails() {
     }
   }, [bookingDetail?.carId]);
 
+  // Kiểm tra feedback của user khi có bookingDetail và account
+  useEffect(() => {
+    const fetchUserFeedback = async () => {
+      if (
+        account.role?.name === "RENTER" &&
+        bookingDetail?.id &&
+        account.id
+      ) {
+        try {
+          const res = await checkHasFeedback(bookingDetail.id, account.id);
+          if (res?.data) {
+            setUserFeedback(res.data);
+            console.log("User feedback:", res.data);
+          } else {
+            setUserFeedback(null);
+          }
+        } catch {
+          setUserFeedback(null);
+        }
+      }
+    };
+    fetchUserFeedback();
+  }, [bookingDetail?.id, account]);
+
+  // Lấy feedback theo bookingId
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      if (account.role?.name === "ADMIN" && bookingDetail?.id) {
+        try {
+        const res = await getFeedbackByBookingId(bookingDetail.id);
+        if (res?.data) {
+          setFeedback(Array.isArray(res.data) ? res.data : [res.data]);
+          console.log("Feedback data:", res.data);
+        } else {
+          setFeedback([]);
+        }
+      } catch (error) {
+        setFeedback([]);
+      }
+      }
+    };
+    fetchFeedback();
+  }, [bookingDetail?.id]);
+
   if (bookingLoading || carLoading || isUserLoading) {
     return <LoadingIcon />;
   }
@@ -148,8 +268,11 @@ function BookingDetails() {
     try {
       const response = await cancelBooking(bookingId);
       if (response && response.statusCode === 200) {
-        alert(`Booking ${bookingId} has been cancelled successfully!`);
-
+        Swal.fire(
+          "Success",
+          `Booking ${bookingId} has been cancelled successfully!`,
+          "success"
+        );
         setBookingDetail((prev) => ({
           ...prev,
           bookingStatus: "Canceled",
@@ -159,16 +282,25 @@ function BookingDetails() {
       }
     } catch (error) {
       console.error("Error canceling booking:", error);
-      alert("Failed to cancel booking. Please try again later.");
+      Swal.fire(
+        "Error",
+        "Failed to cancel booking. Please try again later.",
+        "error"
+      );
     }
   };
 
-  const isDriverSameAsRenter =
-    JSON.stringify(bookingDetail.renter.id) ===
-    JSON.stringify(bookingDetail.driver.id);
-  // const total = calculateTotal(days, basePrice);
   return (
     <Container style={{ paddingRight: "1.5 rem", paddingLeft: "1.5 rem" }}>
+      <SelectPaymentMethodModal
+        show={showModalPayment}
+        setShow={setShowModalPayment}
+        bookingId={bookingId}
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+        type={type}
+        handleComplete={handleComplete}
+      />
       <div className="view-booking-detail-container">
         <h2 className="mb-4">Booking Details</h2>
         <div className="d-flex justify-content-between">
@@ -222,51 +354,33 @@ function BookingDetails() {
             <p>
               Booking No.: <strong>BKN{bookingDetail.id}</strong>
             </p>
-            <p>
-              Status:{" "}
-              <strong
-                style={{
-                  color:
-                    bookingDetail.bookingStatus === "Awaiting Pickup Confirmation"
-                      ? "#b88400"
-                      : bookingDetail.bookingStatus === "Pending Deposit"
-                        ? "blue"
-                        : bookingDetail.bookingStatus === "Cancelled"
-                          ? "red"
-                          : bookingDetail.bookingStatus === "Available"
-                            ? "green"
-                            : bookingDetail.bookingStatus === "In Progress"
-                              ? "orange"
-                              : "black",
-                }}
+            <div style={{ marginBottom: 12 }}>
+              <strong>Status:</strong>
+              <span
+                className={
+                  "status-badge1 " +
+                  bookingDetail.bookingStatus.replace(/\s/g, "-").toLowerCase()
+                }
+                style={{ marginLeft: 8 }}
               >
                 {bookingDetail.bookingStatus}
-              </strong>
-            </p>
-            <div className="d-flex justify-content-between mt-3">
+              </span>
+            </div>
+            <div className="booking-actions mt-3">
               <Button
+                className="custom-btn-back"
                 onClick={() => {
                   if (account.role?.name === "ADMIN") {
-                    navigate("/owner-list-booking");
+                    navigate("/admin/list-booking-requests");
                   } else {
                     navigate("/my-booking");
                   }
                 }}
-                variant="success"
-                style={{
-                  backgroundColor: "#ffc107",
-                  color: "white",
-                  border: "none",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "5px",
-                }}
               >
                 Back to list
               </Button>
-            </div>
-            <div className="d-flex justify-content-between mt-3">
-              <Button
-                variant="primary"
+              {/* <Button
+                className="custom-btn-primary"
                 onClick={() => {
                   if (account.role?.name === "ADMIN") {
                     navigate(`/owner-car-details/${bookingDetail.carId}`);
@@ -276,39 +390,59 @@ function BookingDetails() {
                 }}
               >
                 View Details
-              </Button>
-            </div>
-
-            <div className="d-flex justify-content-between mt-3">
+              </Button> */}
               {["Awaiting Pickup Confirmation", "Pending Deposit"].includes(
                 bookingDetail.bookingStatus
               ) && (
                   <Button
-                    variant="danger"
-                    onClick={() => {
-                      handleCancel(bookingDetail.id);
-                    }}
+                    className="custom-btn-danger"
+                    onClick={() => handleCancel(bookingDetail.id)}
                   >
                     Cancel Booking
                   </Button>
                 )}
-            </div>
-            <div className="d-flex justify-content-between mt-3">
-              {"In Progress".includes(bookingDetail.bookingStatus) && (
+              {"In Progress" === bookingDetail.bookingStatus && account.role?.name === "RENTER" && (
                 <Button
-                  variant="secondary"
-                  onClick={() => {
-                    handleCancel(bookingDetail.id);
-                  }}
+                  className="custom-btn-secondary"
+                  name="Rental"
+                  onClick={(event) => handleReturnCar(event, bookingDetail.id)}
                 >
                   Return Car
                 </Button>
+              )}
+              {"Completed" === bookingDetail.bookingStatus && account.role?.name === "RENTER" && (
+                <>
+                  <Button
+                    className="custom-btn-feedback"
+                    onClick={() => setShowFeedbackModal(true)}
+                  >
+                    {userFeedback ? "Update Feedback" : "Feedback"}
+                  </Button>
+                  <Modal
+                    show={showFeedbackModal}
+                    onHide={() => setShowFeedbackModal(false)}
+                    centered
+                    size="lg"
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>Feedback</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <FeedbackForm
+                        bookingId={bookingDetail.id}
+                        userId={account.id}
+                        carId={bookingDetail.carId}
+                        feedback={userFeedback}
+                        onSuccess={() => setShowFeedbackModal(false)}
+                      />
+                    </Modal.Body>
+                  </Modal>
+                </>
               )}
             </div>
           </div>
         </div>
       </div>
-
 
       {/* Tabs hiển thị thông tin */}
       <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mt-4">
@@ -318,13 +452,13 @@ function BookingDetails() {
             <Row className="mb-3">
               <Col md={6}>
                 <p>
-                  <strong>Full Name:</strong> {bookingDetail.renter.fullName}
+                  <strong>Full Name:</strong> {user.name}
                 </p>
               </Col>
               <Col md={6}>
                 <p>
                   <strong>Date of Birth:</strong>{" "}
-                  {bookingDetail.renter.dateOfBirth}
+                  {user.dateOfBirth}
                 </p>
               </Col>
             </Row>
@@ -332,12 +466,12 @@ function BookingDetails() {
               <Col md={6}>
                 <p>
                   <strong>Phone Number:</strong>{" "}
-                  {bookingDetail.renter.phoneNumber}
+                  {user.phoneNo}
                 </p>
               </Col>
               <Col md={6}>
                 <p>
-                  <strong>Email Address:</strong> {bookingDetail.renter.email}
+                  <strong>Email Address:</strong> {user.email}
                 </p>
               </Col>
             </Row>
@@ -345,80 +479,23 @@ function BookingDetails() {
               <Col md={6}>
                 <p>
                   <strong>National ID No.:</strong>{" "}
-                  {bookingDetail.renter.nationalId}
+                  {user.nationalIdNo}
                 </p>
               </Col>
               <Col md={6}>
                 <p>
                   <strong>Driving License:</strong>{" "}
-                  {bookingDetail.renter.drivingLicense}
+                  {user.drivingLicense}
                 </p>
               </Col>
             </Row>
             <Row className="mb-3">
               <Col>
                 <p>
-                  <strong>Address:</strong> {bookingDetail.renter.address}
+                  <strong>Address:</strong> {user.address}
                 </p>
               </Col>
             </Row>
-
-            <h5>Driver's Information</h5>
-            {isDriverSameAsRenter ? (
-              <p>Same with renter</p>
-            ) : (
-              <>
-                <Row className="mb-3">
-                  <Col md={6}>
-                    <p>
-                      <strong>Full Name:</strong>{" "}
-                      {bookingDetail.driver.fullName}
-                    </p>
-                  </Col>
-                  <Col md={6}>
-                    <p>
-                      <strong>Date of Birth:</strong>{" "}
-                      {bookingDetail.driver.dateOfBirth}
-                    </p>
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col md={6}>
-                    <p>
-                      <strong>Phone Number:</strong>{" "}
-                      {bookingDetail.driver.phoneNumber}
-                    </p>
-                  </Col>
-                  <Col md={6}>
-                    <p>
-                      <strong>Email Address:</strong>{" "}
-                      {bookingDetail.driver.email}
-                    </p>
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col md={6}>
-                    <p>
-                      <strong>National ID No.:</strong>{" "}
-                      {bookingDetail.driver.nationalId}
-                    </p>
-                  </Col>
-                  <Col md={6}>
-                    <p>
-                      <strong>Driving License:</strong>{" "}
-                      {bookingDetail.driver.drivingLicense}
-                    </p>
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <p>
-                      <strong>Address:</strong> {bookingDetail.driver.address}
-                    </p>
-                  </Col>
-                </Row>
-              </>
-            )}
           </div>
         </Tab>
 
@@ -462,10 +539,10 @@ function BookingDetails() {
             </Table>
 
             <p>
-              <strong>Mileage:</strong> {carDetail.mileage}
+              <strong>Mileage:</strong> {carDetail.mileage} km
             </p>
             <p>
-              <strong>Fuel Consumption:</strong> {carDetail.fuelConsumption}/100
+              <strong>Fuel Consumption:</strong> {carDetail.fuelConsumption} liters/100
               km
             </p>
             <p>
@@ -518,6 +595,81 @@ function BookingDetails() {
           </div>
         </Tab>
       </Tabs>
+      <hr />
+      <div>
+        {account.role?.name === "RENTER" ?
+          <>
+            <h4>My feedback</h4>
+            {userFeedback ? (
+              <div className="mt-2 p-3 rounded" style={{ background: "#f8f9fa", border: "1px solid #eee" }}>
+                <div className="d-flex align-items-center mb-2">
+                  <strong className="me-2">{account?.name || "You"}</strong>
+                  <span>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        style={{
+                          color: star <= userFeedback.rating ? "#ffc107" : "#e4e5e9",
+                          fontSize: 18,
+                        }}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </span>
+                </div>
+                <div className="mb-1">{userFeedback.content}</div>
+                <div className="text-muted" style={{ fontSize: 13 }}>
+                  <strong>Created at:</strong>{" "}
+                  {new Date(userFeedback.date).toLocaleDateString("vi-VN")}
+                </div>
+              </div>
+            ) : (
+              <div className="text-muted mt-2">
+                You have not submitted feedback for this booking.</div>
+            )}
+          </>
+          :
+          <>
+            <h4>Feedback from Renter</h4>
+            {feedback && feedback.length > 0 ? (
+              feedback.map((item, index) => (
+                <div
+                  key={index}
+                  className="mt-2 p-3 rounded"
+                  style={{ background: "#f8f9fa", border: "1px solid #eee" }}
+                >
+                  <div className="d-flex align-items-center mb-2">
+                    <strong className="me-2">{item.userName}</strong>
+                    <span>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          style={{
+                            color: star <= item.rating ? "#ffc107" : "#e4e5e9",
+                            fontSize: 18,
+                          }}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                  <div className="mb-1">{item.content}</div>
+                  <div className="text-muted" style={{ fontSize: 13 }}>
+                    <strong>Created at:</strong>{" "}
+                    {new Date(item.date).toLocaleDateString("vi-VN")}
+                  </div>
+                </div>
+              ))) : (
+              <div className="text-muted mt-2">
+                No feedback has been submitted for this booking.
+              </div>
+            )}
+          </>
+
+        }
+      </div>
     </Container>
   );
 }

@@ -36,7 +36,7 @@ const Detail = (props) => {
 
   return (
     <form className="detail-form">
-      <h2>Vehicle Details</h2>
+      <h2>Car's Details</h2>
       <div className="form-grid">
         <div className="form-group">
           <label>Mileage *</label>
@@ -112,7 +112,7 @@ const Detail = (props) => {
           </label>
         ))}
       </div>
-
+        <br/>
       <h3>Images</h3>
       <div className="form-grid images-grid">
         {["front", "back", "left", "right"].map((field) => (

@@ -58,7 +58,9 @@ const Finish = (props) => {
           </div>
           <div className="details-row">
             <span>Price:</span>
-            <span className="span">{currentCar.price}</span>
+            <span className="span">
+              {Number(formData.basePrice || 0).toLocaleString("vi-VN")} VND/ngày
+            </span>
           </div>
           <div className="details-row">
             <span>Locations:</span>

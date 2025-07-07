@@ -47,7 +47,7 @@ const SearchForm = (props) => {
               </div>
             </div>
           </div>
-          <Button onClick={handleSearch} variant='warning btn-search'>Search</Button>
+          <Button onClick={handleSearch} variant='warning btn-search' style={{marginBottom: '0'}}>Search</Button>
         </div>
       )}
 

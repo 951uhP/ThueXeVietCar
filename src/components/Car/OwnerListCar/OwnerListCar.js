@@ -8,6 +8,7 @@ import {
   Col,
   Card,
   Carousel,
+  Badge,
 } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
 import { FiList } from "react-icons/fi";
@@ -15,6 +16,7 @@ import { MdGridOn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import LoadingIcon from "../../Loading";
 import { confirmPickup } from "../../../service/apiService";
+import "./OwnerListCar.scss";
 
 const OwnerListCar = (props) => {
   const { cars, setCars, pageCount, currentPage, setCurrentPage, fetchCar } =
@@ -63,15 +65,6 @@ const OwnerListCar = (props) => {
   const filteredCars = filterStatus
     ? cars.filter((car) => car.carStatus === filterStatus)
     : cars;
-  const handlePickup = async (bookingId) => {
-    try {
-      await confirmPickup(bookingId);
-      alert(`Booking ${bookingId} has been confirmed pickup!`);
-    } catch (error) {
-      console.error("Error confirming booking:", error);
-      alert("Failed to confirm booking. Please try again.");
-    }
-  };
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -102,81 +95,67 @@ const OwnerListCar = (props) => {
     };
   }, [cars]);
 
-  const styles = {
-    image: {
-      width: "150px",
-      height: "100px",
-      objectFit: "cover",
-    },
-    available: {
-      color: "green",
-      fontWeight: "bold",
-    },
-    stopped: {
-      color: "red",
-      fontWeight: "bold",
-    },
-    booked: {
-      color: "blue",
-      fontWeight: "bold",
-    },
-    primaryButton: {
-      width: "170px",
-      backgroundColor: "white",
-      color: "black",
-      border: "1pt solid #333",
-      fontWeight: "bold",
-      padding: "0.5rem ",
-      borderRadius: "5px",
-    },
-    secondaryButton: {
-      backgroundColor: "white",
-      color: "#333",
-      border: "1pt solid #333",
-      fontWeight: "bold",
-      padding: "0.5rem 1rem",
-      borderRadius: "5px",
-    },
-  };
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 800);
   }, []);
 
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(amount);
+
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "Available":
+        return (
+          <Badge bg="success" className="px-3 py-2" style={{ fontSize: "1rem" }}>
+            Available
+          </Badge>
+        );
+      case "Booked":
+        return (
+          <Badge bg="warning" text="dark" className="px-3 py-2" style={{ fontSize: "1rem" }}>
+            Booked
+          </Badge>
+        );
+      case "Stopped":
+        return (
+          <Badge bg="danger" className="px-3 py-2" style={{ fontSize: "1rem" }}>
+            Stopped
+          </Badge>
+        );
+      default:
+        return (
+          <Badge bg="secondary" className="px-3 py-2" style={{ fontSize: "1rem" }}>
+            {status}
+          </Badge>
+        );
+    }
+  };
+
   if (loading) {
     return <LoadingIcon />;
   }
 
   return (
-    <Container className="owner-list-car py-1">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <Button
-          className="secondary-button"
-          onClick={() => navigate("/add-car")}
-        >
-          Add car
-        </Button>
-        <div className="d-flex gap-2 align-items-center">
+    <Container className="owner-list-car py-3">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div className="ms-md-auto d-flex gap-2 align-items-center flex-wrap justify-content-md-end w-100">
           <Button
-            style={{
-              backgroundColor: viewMode === "table" ? "#ffc107" : "white",
-              color: viewMode === "table" ? "black" : "#333",
-              borderColor: "#333",
-            }}
+            className={viewMode === "table" ? "primary-button" : "secondary-button"}
             onClick={() => setViewMode("table")}
           >
             <FiList /> Table View
           </Button>
           <Button
-            style={{
-              backgroundColor: viewMode === "carousel" ? "#ffc107" : "white",
-              color: viewMode === "carousel" ? "black" : "#333",
-              borderColor: "#333",
-            }}
+            className={viewMode === "carousel" ? "primary-button" : "secondary-button"}
             onClick={() => setViewMode("carousel")}
           >
-            <MdGridOn /> Carousel View
+            <MdGridOn /> Card View
           </Button>
           <Dropdown>
             <Dropdown.Toggle variant="outline-secondary">
@@ -202,7 +181,9 @@ const OwnerListCar = (props) => {
               <Dropdown.Item onClick={() => filterCarsByStatus("Available")}>
                 Available
               </Dropdown.Item>
-
+              <Dropdown.Item onClick={() => filterCarsByStatus("Booked")}>
+                Booked
+              </Dropdown.Item>
               <Dropdown.Item onClick={() => filterCarsByStatus("Stopped")}>
                 Stopped
               </Dropdown.Item>
@@ -212,8 +193,8 @@ const OwnerListCar = (props) => {
       </div>
 
       {viewMode === "table" ? (
-        <Table striped bordered hover responsive>
-          <thead>
+        <Table striped bordered hover responsive className="rounded shadow-sm">
+          <thead className="table-light">
             <tr>
               <th>#</th>
               <th>Car Name</th>
@@ -221,7 +202,6 @@ const OwnerListCar = (props) => {
               <th>Price</th>
               <th>Location</th>
               <th>Status</th>
-              {/* <th>Confirm</th> */}
               <th>View details</th>
             </tr>
           </thead>
@@ -230,7 +210,7 @@ const OwnerListCar = (props) => {
               filteredCars.map((car, index) => (
                 <tr key={car.id}>
                   <td>{index + 1}</td>
-                  <td>{car.name}</td>
+                  <td className="fw-bold">{car.name}</td>
                   <td>
                     <img
                       src={
@@ -239,49 +219,16 @@ const OwnerListCar = (props) => {
                           : "default-placeholder.png"
                       }
                       alt={car.name}
-                      style={{
-                        width: "80px",
-                        height: "50px",
-                        objectFit: "cover",
-                      }}
+                      className="car-image rounded"
                     />
                   </td>
-                  <td>{car.basePrice}</td>
+                  <td className="text-primary fw-bold">{formatCurrency(car.basePrice)}</td>
                   <td>{car.address}</td>
-                  <td>
-                    <span
-                      style={
-                        car.carStatus === "Available"
-                          ? styles.available
-                          : car.carStatus === "Booked"
-                          ? styles.booked
-                          : styles.stopped
-                      }
-                    >
-                      {car.carStatus}
-                    </span>
-                  </td>
-                  {/* <td> */}
-                  {/* {car.carStatus === "Booked" && (
-                      <Button style={styles.primaryButton}>
-                        Confirm Payment
-                      </Button>
-                    )} */}
-                  {/* {car.carStatus === "Available" && (
-                      <Button style={styles.primaryButton}>
-                        Confirm Pick - up
-                      </Button>
-                    )} */}
-                  {/* {car.carStatus === "Stopped" && (
-                      <Button style={styles.primaryButton}>
-                        Confirm Deposit
-                      </Button>
-                    )} */}
-                  {/* </td> */}
+                  <td>{getStatusBadge(car.carStatus)}</td>
                   <td>
                     <Button
                       onClick={() => handleCarDetail(car.id)}
-                      style={styles.secondaryButton}
+                      className="secondary-button"
                     >
                       View details
                     </Button>
@@ -294,52 +241,38 @@ const OwnerListCar = (props) => {
         <Row>
           {Array.isArray(filteredCars) &&
             filteredCars.map((car) => (
-              <Col md={12} key={car.id} className="mb-4">
-                <Card className="p-3">
-                  <Row className="align-items-center">
-                    <Col md={6} className="d-flex justify-content-center">
-                      <Carousel>
-                        {(imageUrls[car.id] && imageUrls[car.id].length > 0
-                          ? imageUrls[car.id]
-                          : ["default-placeholder.png"]
-                        ).map((imgUrl, index) => (
-                          <Carousel.Item key={index}>
-                            <img
-                              src={imgUrl}
-                              alt={`Car ${index + 1}`}
-                              style={{
-                                height: "200px",
-                                objectFit: "cover",
-                              }}
-                            />
-                          </Carousel.Item>
-                        ))}
-                      </Carousel>
-                    </Col>
-                    <Col
-                      md={6}
-                      className="d-flex flex-column justify-content-center"
+              <Col md={6} lg={4} key={car.id} className="mb-4">
+                <Card className="shadow-sm h-100">
+                  <Carousel interval={null} indicators={false}>
+                    {(imageUrls[car.id] && imageUrls[car.id].length > 0
+                      ? imageUrls[car.id]
+                      : ["default-placeholder.png"]
+                    ).map((imgUrl, index) => (
+                      <Carousel.Item key={index}>
+                        <img
+                          src={imgUrl}
+                          alt={`Car ${index + 1}`}
+                          className="carousel-image rounded-top"
+                        />
+                      </Carousel.Item>
+                    ))}
+                  </Carousel>
+                  <Card.Body className="d-flex flex-column justify-content-between">
+                    <div>
+                      <h5 className="fw-bold mb-2">{car.name}</h5>
+                      <div className="mb-2 text-primary fw-bold">
+                        {formatCurrency(car.basePrice)}
+                      </div>
+                      <div className="mb-2">{car.address}</div>
+                      <div className="mb-2">{getStatusBadge(car.carStatus)}</div>
+                    </div>
+                    <Button
+                      onClick={() => handleCarDetail(car.id)}
+                      className="secondary-button mt-2"
                     >
-                      <h5 className="text-center">{car.name}</h5>
-                      <p className="text-center">
-                        <strong>Price:</strong> {car.basePrice}
-                      </p>
-                      <p className="text-center">
-                        <strong>Status:</strong>{" "}
-                        <span
-                          style={
-                            car.carStatus === "Available"
-                              ? styles.available
-                              : car.carStatus === "Booked"
-                              ? styles.booked
-                              : styles.stopped
-                          }
-                        >
-                          {car.carStatus}
-                        </span>
-                      </p>
-                    </Col>
-                  </Row>
+                      View details
+                    </Button>
+                  </Card.Body>
                 </Card>
               </Col>
             ))}

@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, Alert, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { checkEmailExistAPI } from "../../service/apiService";
 import "./ForgotPass.scss";
 
 const ForgotPass = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -13,21 +17,34 @@ const ForgotPass = () => {
     return regex.test(email);
   };
 
-  const handleSendMail = (e) => {
+  const checkEmailExist = async (e) => {
     e.preventDefault();
+
     if (!email) {
       setError("Email address is required.");
       return;
     }
+
     if (!validateEmail(email)) {
       setError("Please enter a valid email address.");
       return;
     }
     setError("");
-    alert(
-      "If this email address exists, we'll send an email with the link to reset your password."
-    );
-    navigate("/auth");
+    setMessage("");
+    setLoading(true);
+
+    try {
+      const response = await checkEmailExistAPI(email);
+      console.log(response);
+      if (response) {
+        navigate(`/reset-password?email=${encodeURIComponent(email)}`);
+      } else {
+        setError("Email does not exist.");
+      }
+    } catch (error) {
+      console.error("Error in checkEmailExist:", error);
+    }
+    setLoading(false);
   };
 
   return (
@@ -39,8 +56,11 @@ const ForgotPass = () => {
             Enter the email address associated with your account, and we’ll
             email you with the link to reset your password.
           </p>
-          <Form onSubmit={handleSendMail}>
-            {error && <Alert variant="danger">{error}</Alert>}{" "}
+
+          <Form onSubmit={checkEmailExist}>
+            {error && <Alert variant="danger">{error}</Alert>}
+            {message && <Alert variant="success">{message}</Alert>}
+
             <Form.Group className="mb-3" controlId="formEmail">
               <Form.Control
                 type="email"
@@ -49,8 +69,16 @@ const ForgotPass = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
-            <Button type="submit" className="btn-submit">
-              Submit
+
+            <Button type="submit" className="btn-submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <Spinner animation="border" size="sm" className="me-2" />
+                  Sending...
+                </>
+              ) : (
+                "Submit"
+              )}
             </Button>
           </Form>
         </Col>

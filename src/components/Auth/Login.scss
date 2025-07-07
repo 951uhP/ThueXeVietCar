@@ -23,6 +23,24 @@
 
 }
 
+.eye-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px; /* Match Bootstrap's default input height */
+  padding: 0 12px;
+  cursor: pointer;
+  background-color: #fff; /* Match input background */
+  border: 1px solid #ced4da; /* Match Bootstrap's input border */
+  border-left: none; /* Seamless connection with input */
+  border-radius: 0 0.25rem 0.25rem 0; /* Match Bootstrap's input border-radius */
+}
+
+.eye-icon-container svg {
+  font-size: 1.2rem; /* Adjust icon size */
+  color: #495057; /* Match Bootstrap's input text color */
+}
+
 @media (max-width: 768px) {
 
   .d-flex .divider {

@@ -3,35 +3,14 @@ import { Form, Row, Col, Button } from "react-bootstrap";
 import "./BookingDetail.scss";
 
 const BookingDetail = (props) => {
-  const { carDetail, requestBody, setRequestBody, imageURLs, requestRenter, requestDriver, setRequestDriver, setRequestRenter } = props;
-  const [isDifferentDriver, setIsDifferentDriver] = useState(false);
-
-  const handleChangeRenter = (e) => {
-    const { name, value } = e.target;
-    setRequestRenter({
-      ...requestRenter,
-      [name]: value,
-    });
-  };
-
-  const handleChangeDriver = (e) => {
-    const { name, value } = e.target;
-    setRequestDriver({
-      ...requestDriver,
-      [name]: value,
-    });
-  };
-
-  const handleCheckboxChange = (e) => {
-    setIsDifferentDriver(e.target.checked);
-    console.log(requestRenter);
-  };
+  const { carDetail, imageURLs, requestRenter, setRequestRenter } = props;
 
   // Format số tiền hiển thị
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
+      maximumFractionDigits: 0,
     }).format(amount);
   };
 
@@ -41,36 +20,45 @@ const BookingDetail = (props) => {
     return `${day}-${month}-${year}`;
   };
 
-  const toISODate = (displayDate) => {
-    if (!displayDate) return "";
-    const [day, month, year] = displayDate.split("-");
-    return `${year}-${month}-${day}`;
+  const handleChangeRenter = (e) => {
+    const { name, value } = e.target;
+    setRequestRenter({
+      ...requestRenter,
+      [name]: value,
+    });
   };
 
-  console.log("Request Renter:", requestRenter);
   return (
     <div className="booking-detail">
       <Row className="car-info mb-4">
         <Col md={4}>
-          <div className="car-image">
+          <div className="car-image shadow-sm">
             <img src={imageURLs[0]} alt="Car" className="img-fluid" />
           </div>
         </Col>
         <Col md={8}>
-          <h4>{carDetail.name}</h4>
-          <p>Deposit: {carDetail.deposit}</p>
-          <p>Price: {formatCurrency(carDetail.basePrice)}/day</p>
-          <p>Location: {carDetail.address}</p>
+          <h4 className="mb-2">{carDetail.name}</h4>
+          
+            <div className="fw-bold text-success">
+              Deposit: {formatCurrency(carDetail.deposit)}
+            </div>
+            <div className="fw-bold text-warning">
+              Base Price: {formatCurrency(carDetail.basePrice)}/day
+            </div>
+          
+          <div className="mb-2">
+            <i className="bi bi-geo-alt-fill text-danger"></i>
+            <span className="ms-1">{carDetail.address}</span>
+          </div>
         </Col>
       </Row>
 
-      {/* Form thông tin */}
-      <Form>
-        <h5>Renter's Information</h5>
+      <Form className="p-3 rounded bg-white shadow-sm">
+        <h5 className="mb-3 text-primary">Renter Information</h5>
         <Row>
           <Col md={6}>
             <Form.Group controlId="renterFullName">
-              <Form.Label>Full Name:</Form.Label>
+              <Form.Label>Full Name</Form.Label>
               <Form.Control
                 value={requestRenter.fullName}
                 type="text"
@@ -83,11 +71,12 @@ const BookingDetail = (props) => {
           </Col>
           <Col md={6}>
             <Form.Group controlId="renterDob">
-              <Form.Label>Date of Birth:</Form.Label>
+              <Form.Label>Date of Birth</Form.Label>
               <Form.Control
                 type="text"
                 required
                 name="dateOfBirth"
+                placeholder="dd-mm-yyyy"
                 value={toDisplayDate(requestRenter.dateOfBirth)}
                 onChange={handleChangeRenter}
               />
@@ -97,7 +86,7 @@ const BookingDetail = (props) => {
         <Row>
           <Col md={6}>
             <Form.Group controlId="renterPhone">
-              <Form.Label>Phone Number:</Form.Label>
+              <Form.Label>Phone Number</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter phone number"
@@ -110,7 +99,7 @@ const BookingDetail = (props) => {
           </Col>
           <Col md={6}>
             <Form.Group controlId="renterEmail">
-              <Form.Label>Email Address:</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Enter email"
@@ -125,7 +114,7 @@ const BookingDetail = (props) => {
         <Row>
           <Col md={6}>
             <Form.Group controlId="renterNationalId">
-              <Form.Label>National ID No.:</Form.Label>
+              <Form.Label>National ID</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter national ID"
@@ -138,10 +127,10 @@ const BookingDetail = (props) => {
           </Col>
           <Col md={6}>
             <Form.Group controlId="renterLicense">
-              <Form.Label>Driving License:</Form.Label>
+              <Form.Label>Driving License</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter driving license"
+                placeholder="Enter driving license number"
                 required
                 name="drivingLicense"
                 value={requestRenter.drivingLicense}
@@ -153,7 +142,7 @@ const BookingDetail = (props) => {
         <Row>
           <Col md={12}>
             <Form.Group controlId="renterAddress">
-              <Form.Label>Address:</Form.Label>
+              <Form.Label>Address</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="City/Province, District, Ward, Street"
@@ -161,113 +150,6 @@ const BookingDetail = (props) => {
                 name="address"
                 value={requestRenter.address}
                 onChange={handleChangeRenter}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-
-        <h5>Driver's Information</h5>
-        <Form.Group controlId="differentDriver">
-          <Form.Check
-            type="checkbox"
-            label="Different than Renter's information"
-            onChange={handleCheckboxChange}
-          />
-        </Form.Group>
-        <Row>
-          <Col md={6}>
-            <Form.Group controlId="driverFullName">
-              <Form.Label>Full Name:</Form.Label>
-              <Form.Control
-                name="fullName"
-                type="text"
-                placeholder="Enter full name"
-                disabled={!isDifferentDriver}
-                value={requestDriver.fullName}
-                onChange={handleChangeDriver}
-              />
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="driverDob">
-              <Form.Label>Date of Birth:</Form.Label>
-              <Form.Control
-                type="date"
-                name="dateOfBirth"
-                disabled={!isDifferentDriver}
-                value={requestDriver.dateOfBirth}
-                onChange={handleChangeDriver}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={6}>
-            <Form.Group controlId="driverPhone">
-              <Form.Label>Phone Number:</Form.Label>
-              <Form.Control
-                type="text"
-                name="phoneNumber"
-                placeholder="Enter phone number"
-                disabled={!isDifferentDriver}
-                value={requestDriver.phoneNumber}
-                onChange={handleChangeDriver}
-              />
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="driverEmail">
-              <Form.Label>Email Address:</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                disabled={!isDifferentDriver}
-                value={requestDriver.email}
-                onChange={handleChangeDriver}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={6}>
-            <Form.Group controlId="driverNationalId">
-              <Form.Label>National ID No.:</Form.Label>
-              <Form.Control
-                type="text"
-                name="nationalId"
-                placeholder="Enter national ID"
-                disabled={!isDifferentDriver}
-                value={requestDriver.nationalId}
-                onChange={handleChangeDriver}
-              />
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="driverLicense">
-              <Form.Label>Driving License:</Form.Label>
-              <Form.Control
-                type="text"
-                name="drivingLicense"
-                placeholder="Enter driving license"
-                disabled={!isDifferentDriver}
-                value={requestDriver.drivingLicense}
-                onChange={handleChangeDriver}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <Form.Group controlId="driverAddress">
-              <Form.Label>Address:</Form.Label>
-              <Form.Control
-                type="text"
-                name="address"
-                placeholder="City/Province, District, Ward, Street"
-                disabled={!isDifferentDriver}
-                value={requestDriver.address}
-                onChange={handleChangeDriver}
               />
             </Form.Group>
           </Col>

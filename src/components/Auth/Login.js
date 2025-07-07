@@ -4,14 +4,17 @@ import "./Login.scss";
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../redux/action/userAction.js';
 import { Link } from "react-router-dom";
-import { postLogin, postRegister } from "../../service/apiService.js";
+import { postLogin } from "../../service/apiService.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -30,21 +33,20 @@ const Login = () => {
     console.log(data.data);
 
     if (data && data.error === null) {
-      //dispatch
-     dispatch(loginUser(data.data));
+      dispatch(loginUser(data.data));
       toast.success("Login successful!");
 
-      // Điều hướng theo role
       const userRole = data.data?.user?.role?.name || data.data?.user?.role;
       if (userRole === "ADMIN") {
-        navigate("/owner"); // Đường dẫn trang admin, bạn có thể đổi lại cho phù hợp
+        navigate("/admin");
       } else if (userRole === "RENTER") {
-        navigate("/"); // Trang chủ cho renter
+        navigate("/");
       } else {
-        navigate("/"); // Trang mặc định
+        navigate("/");
       }
+    } else {
+      toast.error("Wrong email or password");
     }
-
   };
 
   return (
@@ -61,6 +63,7 @@ const Login = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                required
               />
             </div>
           </Form.Group>
@@ -68,12 +71,20 @@ const Login = () => {
             <Form.Label>Password</Form.Label>
             <div className="input-group">
               <Form.Control
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
+                className="password-input"
+                required
               />
+              <span
+                className="input-group-text eye-icon-container"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
           </Form.Group>
           <Link to="/forgot" className="forgot-password-link">

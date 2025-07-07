@@ -1,11 +1,6 @@
-
-import React, { useState } from "react";
-import { Dropdown, Form } from "react-bootstrap";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Modal from "react-bootstrap/Modal";
-import Row from "react-bootstrap/Row";
-import "../Home/Content/ModalPickLocation.scss";
+import React from "react";
+import { Form, Button, Modal, Row, Col } from "react-bootstrap";
+import "./SelectPaymentMethodModal.scss";
 import { toast } from "react-toastify";
 import { completeBooking, postConfirmBooking, refundBooking } from "../../service/apiService";
 
@@ -18,26 +13,19 @@ function SelectPaymentMethodModal(props) {
                 bookingId,
                 paymentMethod
             );
-            console.log("Payment confirmation response:", confirmResponse);
-
             window.location.href = confirmResponse.data.paymentUrl;
             return;
         }
         if (type === "Refund") {
             let response = await refundBooking(bookingId, paymentMethod);
-            console.log("Payment confirmation response:", response.paymentUrl);
-
             window.location.href = response.paymentUrl;
             return;
         }
         if (type === "Rental") {
             let response = await completeBooking(bookingId, paymentMethod);
-            console.log("Payment confirmation response:", response.paymentUrl);
-
             window.location.href = response.paymentUrl;
             return;
         }
-
         handleClose();
     };
 
@@ -55,36 +43,72 @@ function SelectPaymentMethodModal(props) {
             onHide={handleClose}
             aria-labelledby="contained-modal-title-vcenter"
             backdrop="static"
-            size="lg"
+            size="md"
             centered
             className="modal-search-location"
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Select your PaymentMethod
+                    <i className="bi bi-credit-card-2-front-fill" style={{ color: "#ff9800", marginRight: 8 }}></i>
+                    Select your Payment Method
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div className="form-group">
-                    <label>Select payment method</label>
-                    <select
-                        name="paymentMethod"
-                        value={paymentMethod}
-                        onChange={handleInputChange}
-                    >
-                        <option value="vnpay">VNPAY</option>
-                        <option value="wallet">Wallet</option>
-                    </select>
-                </div>
+                <Form>
+                    <Form.Group as={Row} className="mb-4" controlId="paymentMethod">
+                        {/* <Form.Label column sm={4} style={{ fontWeight: 600, fontSize: "1.1rem" }}>
+                            Payment Method
+                        </Form.Label> */}
+                        <Col sm={8}>
+                            <div className="d-flex flex-column gap-3">
+                                <Form.Check
+                                    type="radio"
+                                    id="wallet"
+                                    name="paymentMethod"
+                                    value="wallet"
+                                    label={
+                                        <>
+                                            <span className="pay-icon"><i className="bi bi-wallet2" style={{ color: "#ff9800"}}></i></span>
+                                            My wallet
+                                        </>
+                                    }
+                                    checked={paymentMethod === "wallet"}
+                                    onChange={handleInputChange}
+                                    className="pay-radio"
+                                />
+                                <Form.Check
+                                    type="radio"
+                                    id="vnpay"
+                                    name="paymentMethod"
+                                    value="vnpay"
+                                    label={
+                                        <>
+                                            <span className="pay-icon"><i className="bi bi-bank" style={{ color: "#ff9800"}}></i></span>
+                                            Bank transfer <br />
+                                            <span style={{ fontStyle: "italic" }}>
+                                                Pay by VNPAY
+                                            </span>
+                                        </>
+                                    }
+                                    checked={paymentMethod === "vnpay"}
+                                    onChange={handleInputChange}
+                                    className="pay-radio"
+                                />
+                            </div>
+                        </Col>
+                    </Form.Group>
+                </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button className="btn-loca" onClick={handleSubmit} variant="primary">
+                <Button className="btn-loca" onClick={handleSubmit} variant="warning" style={{ fontWeight: 700, minWidth: 100 }}>
+                    <i className="bi bi-cash-coin" style={{ marginRight: 6 }}></i>
                     Pay
                 </Button>
                 <Button
                     className="btn-date"
                     onClick={handleClose}
                     variant="outline-secondary"
+                    style={{ fontWeight: 600, minWidth: 100 }}
                 >
                     Close
                 </Button>

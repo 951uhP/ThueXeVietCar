@@ -77,7 +77,7 @@ const BookingPage = () => {
   };
 
   const handleCancel = () => {
-    navigate("/carDetails");
+    navigate(-1); // Quay lại trang trước đó (car-details)
   };
 
   const handleSetRequestBody = () => {
@@ -120,9 +120,8 @@ const BookingPage = () => {
     try {
       const response = await postANewBooking(
         carId,
-        requestBody,
-        requestRenter,
-        requestDriver
+        requestBody
+        // Không truyền requestDriver nữa
       );
       console.log("Booking successful:", response.data);
 

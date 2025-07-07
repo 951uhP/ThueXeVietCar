@@ -32,12 +32,20 @@ const postRegister = (
   userPhone,
   userRole,
   userWallet,
+  userDateOfBirth,
+  userNationalIdNo,
+  userAddress,
+  userDrivingLicense,
 ) => {
   return axios.post(`users/register`, {
     email: userEmail,
     name: userName,
     password: userPassword,
     phoneNo: userPhone,
+    dateOfBirth: userDateOfBirth,
+    nationalIdNo: userNationalIdNo,
+    address: userAddress,
+    drivingLicense: userDrivingLicense,
     role: { name: userRole } ,
     wallet: userWallet,
   });
@@ -160,6 +168,17 @@ const refundBooking = async (bookingId, paymentMethod) => {
     throw error;
   }
 };
+
+const checkEmailExistAPI = async (email) => {
+  try {
+    axios.defaults.withCredentials = true;
+    const response = await axios.get(`/users/check-email?email=${email}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error in checkEmailExistAPI:", error.message);
+    throw error;
+  }
+};
 const getBookingDetail = (bookingId) => {
   if (!bookingId) {
     throw new Error("bookingId is required to fetch car details");
@@ -246,11 +265,15 @@ const cancelBooking = (bookingId) => {
   try {
     axios.defaults.withCredentials = true;
     console.log(`/cancel/${bookingId}`);
-    const response = axios.post(`bookings/cancel/${bookingId}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = axios.post(
+      `bookings/cancel/${bookingId}`,
+      {}, // body rỗng
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response;
   } catch (e) {
     console.error("Error in cancelBooking:", e.message);
@@ -297,15 +320,10 @@ const postAddNewCar = (metadata, documents, images) => {
   });
 };
 
-const postANewBooking = (carId, bookingInfo, renter, driver) => {
+const postANewBooking = (carId, bookingInfo) => {
   axios.defaults.withCredentials = true;
 
   const formData = new FormData();
-  console.log(carId);
-  console.log(renter);
-  console.log(driver);
-  console.log(bookingInfo);
-
   formData.append(
     "bookingInfo",
     new Blob([JSON.stringify(bookingInfo)], {
@@ -313,19 +331,7 @@ const postANewBooking = (carId, bookingInfo, renter, driver) => {
     })
   );
 
-  formData.append(
-    "renter",
-    new Blob([JSON.stringify(renter)], {
-      type: "application/json",
-    })
-  );
-
-  formData.append(
-    "driver",
-    new Blob([JSON.stringify(driver)], {
-      type: "application/json",
-    })
-  );
+  // Không gửi driver nữa
 
   return axios.post(`bookings/new-booking?carId=${carId}`, formData, {
     withCredentials: true,
@@ -403,11 +409,67 @@ const getOwnersBooking = () => {
 export const createFeedback = (bookingId, feedback) => {
   return axios.post(`/feedbacks/create-feedback?bookingId=${bookingId}`, feedback);
 };
-export const getFeedbackByRenterAndCar = (renterId, carId) => {
-  return axios.get(`/feedbacks/by-renter-and-car?renterId=${renterId}&carId=${carId}`);
+export const checkHasFeedback = (bookingId, userId) => {
+  axios.defaults.withCredentials = true;
+  return axios.get(`/feedbacks/has-feedback?bookingId=${bookingId}&userId=${userId}`);
 };
 export const updateFeedback = (feedbackId, feedback) => {
   return axios.put(`/feedbacks/${feedbackId}`, feedback);
+};
+export const getFeedbackByBookingId = (bookingId) => {
+  axios.defaults.withCredentials = true;
+  return axios.get(`/feedbacks/by-booking-id?bookingId=${bookingId}`);
+};
+const getAllFeedBack = async (carId) => {
+  try {
+    axios.defaults.withCredentials = true;
+    const response = await axios.get(`/feedbacks/all?carId=${carId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error in getAllFeedBack:", error.message);
+    throw error;
+  }
+};
+
+const getAverageRating = async (carId) => {
+  try {
+    axios.defaults.withCredentials = true;
+    const response = await axios.get(`/feedbacks/average-rating?carId=${carId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error in getAverageRating:", error.message);
+    throw error;
+  }
+};
+
+
+const getAllUser = async () => {
+  try {
+    axios.defaults.withCredentials = true;
+    const response = await axios.get(`/users`);
+    // Lọc chỉ lấy user có role là RENTER
+    if (response.data && Array.isArray(response.data)) {
+      return response.data.filter(user => user.role?.name === "RENTER");
+    }
+    return [];
+  } catch (error) {
+    console.error("Error in getAllUser:", error.message);
+    throw error;
+  }
+};
+
+const deleteUser = async (userId) => {
+  if (!userId) {
+    throw new Error("userId is required to delete user");
+  }
+  try {
+    axios.defaults.withCredentials = true;
+    const response = await axios.delete(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error in deleteUser:", error.message);
+    throw error;
+  }
 };
 
 export {
@@ -437,4 +499,9 @@ export {
   postConfirmPayment,
   confirmRefund,
   refundBooking,
+  getAllUser,
+  deleteUser,
+  getAllFeedBack,
+  getAverageRating,
+  checkEmailExistAPI,
 };

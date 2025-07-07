@@ -1,65 +1,83 @@
 .payment-page {
   background: #fff;
-  border-radius: 16px;
-  padding: 2rem 1rem 1.5rem 1rem;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  border-radius: 24px;
+  padding: 2.5rem 1.5rem 2rem 1.5rem;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.13);
 
-  .car-info-card {
-    background: #fffbe6;
-    border-radius: 14px;
-    border: none;
-    box-shadow: 0 2px 8px rgba(255,193,7,0.07);
-    .car-title {
-      font-weight: 700;
-      color: #222;
-      margin-bottom: 0.5rem;
-    }
-    .car-meta {
-      display: flex;
-      gap: 1.2rem;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      .car-price {
-        color: #ff9800;
-        font-weight: 600;
-        font-size: 1.1rem;
+  h4 {
+    font-weight: 900;
+    color: #2d2f48;
+    letter-spacing: 1.2px;
+    margin-bottom: 2.2rem;
+    text-align: center;
+    text-shadow: 0 2px 8px #e3e6f3;
+  }
+
+  .car-image {
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+    img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #f8f9fa;
+      border: 1.5px solid #eee;
+      box-shadow: 0 2px 12px rgba(44, 62, 80, 0.10);
+      transition: box-shadow 0.2s;
+      &:hover {
+        box-shadow: 0 4px 24px rgba(44, 62, 80, 0.18);
       }
-      .car-location {
-        color: #0d6efd;
-        font-size: 1rem;
-        i { margin-right: 4px; }
-      }
-    }
-    .car-status-badge {
-      color: #198754;
-      background: #e6ffe6;
-      font-weight: 600;
-      border-radius: 12px;
-      padding: 4px 16px;
-      font-size: 1rem;
-      display: inline-block;
-      margin-top: 8px;
     }
   }
 
+  .car-title {
+    font-weight: 900;
+    color: #2d2f48;
+    margin-bottom: 0.7rem;
+    font-size: 1.35rem;
+    letter-spacing: 0.5px;
+  }
+
+  .fw-bold.text-success,
+  .fw-bold.text-warning {
+    font-size: 1.13rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .fw-bold.text-success {
+    color: #43a047 !important;
+  }
+  .fw-bold.text-warning {
+    color: #ff9800 !important;
+  }
+
+  .mb-2 {
+    font-size: 1.08rem;
+    color: #444;
+  }
+
   .summary-card {
-    border-radius: 14px;
+    border-radius: 18px;
     border: none;
-    background: #f8f9fa;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    background: linear-gradient(135deg, #e0f7fa 0%, #f8fafc 100%);
+    box-shadow: 0 2px 14px rgba(44, 62, 80, 0.09);
     h5 {
-      font-weight: bold;
-      margin-bottom: 1rem;
-      color: #222;
+      font-weight: 800;
+      margin-bottom: 1.2rem;
+      color: #2d2f48;
+      letter-spacing: 0.5px;
+      text-align: left;
     }
     .summary-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 0;
-      font-size: 1.08rem;
-      border-bottom: 1px solid #f1f1f1;
-      min-height: 36px;
+      padding: 10px 0;
+      font-size: 1.13rem;
+      border-bottom: 1px solid #ececec;
+      min-height: 38px;
       &:last-child {
         border-bottom: none;
       }
@@ -74,27 +92,28 @@
           flex: 0 0 40%;
           text-align: right;
           color: #222;
-          font-weight: 600;
+          font-weight: 700;
           letter-spacing: 0.5px;
         }
       }
     }
     .total {
-      color: #ff9800;
-      font-weight: 700;
-      font-size: 1.12rem;
+      color: #fc5c7d;
+      font-weight: 900;
+      font-size: 1.22rem;
+      letter-spacing: 1px;
     }
   }
 
   .payment-method-card {
-    border-radius: 14px;
+    border-radius: 18px;
     border: none;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    background: linear-gradient(135deg, #fceabb 0%, #f8fafc 100%);
+    box-shadow: 0 2px 14px rgba(44, 62, 80, 0.08);
     h5 {
-      font-weight: bold;
+      font-weight: 800;
       margin-bottom: 1.2rem;
-      color: #222;
+      color: #2d2f48;
       i {
         color: #ffc107;
         margin-right: 8px;
@@ -118,10 +137,30 @@
   .payment-note {
     font-style: italic;
     color: #888;
-    font-size: 1.05rem;
+    font-size: 1.08rem;
+    margin-top: 2rem;
+    text-align: center;
     i {
       color: #0d6efd;
       margin-right: 6px;
+    }
+  }
+
+  .car-info-card {
+    border-radius: 20px;
+    border: none;
+    background: linear-gradient(135deg, #fffbe6 0%, #e3e6f3 100%);
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    max-width: 900px;
+    margin: 0 auto;
+    .car-image img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #f8f9fa;
+      border: 1.5px solid #eee;
+      box-shadow: 0 2px 12px rgba(44, 62, 80, 0.10);
     }
   }
 }
@@ -129,8 +168,16 @@
 @media (max-width: 992px) {
   .payment-page {
     padding: 1rem 0.5rem;
-    .car-info-card, .summary-card, .payment-method-card {
+    .car-image img {
+      height: 120px;
+    }
+    .summary-card, .payment-method-card {
       margin-bottom: 1.2rem;
+    }
+    .car-info-card {
+      .car-image img {
+        height: 180px;
+      }
     }
   }
 }

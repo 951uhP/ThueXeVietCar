@@ -27,7 +27,7 @@ const SearchQuery = (props) => {
     return (
         <>
             <Form className="mb-4 search-section">
-                <Row className="align-items-center">
+                <Row className="align-items-end">
                     <Col md={4}>
                         <Form.Group controlId="pickupLocation">
                             <Form.Label>Pick-Up Location</Form.Label>
@@ -65,10 +65,12 @@ const SearchQuery = (props) => {
                     </Col>
                     <Col md={2}>
                         <Button
-                            className="mt-4 w-100"
+                            className="w-100 h-100"
                             variant="warning"
                             onClick={handleSearch}
-                        >Search</Button>
+                        >
+                            Search
+                        </Button>
                     </Col>
                 </Row>
             </Form>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Row, Col, Card } from "react-bootstrap";
+import { Form, Row, Col, Card } from "react-bootstrap";
 import "./Payment.scss";
 
 const Payment = (props) => {
@@ -23,36 +23,56 @@ const Payment = (props) => {
   return (
     <div className="payment-page">
       <h4 className="mb-4">Step 2: Payment</h4>
-      <Row className="mb-4">
-        <Col md={4}>
-          <Card className="car-info-card">
-            <Card.Body>
-              {carDetail.images && carDetail.images.length > 0 && (
-                <div className="car-image mb-3">
+      <Row className="justify-content-center mb-4">
+        <Col lg={8} md={10}>
+          <Card className="car-info-card mb-4">
+            <Card.Body className="d-flex flex-column flex-md-row align-items-center">
+              <div
+                className="car-image mb-3 mb-md-0 me-md-4"
+                style={{
+                  flex: "0 0 360px",
+                  width: 360,
+                  maxWidth: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                {carDetail.images && carDetail.images.length > 0 && (
                   <img
                     src={`http://localhost:9999${carDetail.images[0]}`}
                     alt={carDetail.name}
                     style={{
                       width: "100%",
-                      height: "160px",
+                      height: "300px",
                       objectFit: "cover",
-                      borderRadius: "10px",
+                      borderRadius: "16px",
                       background: "#f8f9fa",
-                      border: "1px solid #eee"
+                      border: "1.5px solid #eee"
                     }}
                   />
+                )}
+              </div>
+              <div style={{ flex: 1, width: "100%", textAlign: "left", alignItems: 'start' }}>
+                <h5 className="car-title">{carDetail.name}</h5>
+                <div className="fw-bold text-success">
+                  Deposit: {formatCurrency(carDetail.deposit)}
                 </div>
-              )}
-              <h5 className="car-title" style={{textAlign: 'left'}}>{carDetail.name}</h5>
-              <div className="car-meta">
-                <span className="car-price">{formatCurrency(carDetail?.basePrice || 0)}/day</span>
-                <span className="car-location"><i className="bi bi-geo-alt-fill"></i> {carDetail.address}</span>
+                <div className="fw-bold text-warning">
+                  Base Price: {formatCurrency(carDetail.basePrice)}/day
+                </div>
+                <div className="mb-2">
+                  <i className="bi bi-geo-alt-fill text-danger"></i>
+                  <span className="ms-1">{carDetail.address}</span>
+                </div>
               </div>
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4}>
-          <Card className="summary-card">
+      </Row>
+      <Row className="gy-4">
+        <Col md={6}>
+          <Card className="summary-card h-100">
             <Card.Body>
               <h5>Booking Summary</h5>
               <div className="summary-row">
@@ -74,13 +94,10 @@ const Payment = (props) => {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4}></Col>
-      </Row>
-      <Row>
         <Col md={6}>
-          <Card className="payment-method-card">
+          <Card className="payment-method-card h-100">
             <Card.Body>
-              <h5 style={{textAlign: 'left'}}><i className="bi bi-credit-card-2-front-fill"></i> Please select your payment method</h5>
+              <h5><i className="bi bi-credit-card-2-front-fill"></i> Please select your payment method</h5>
               <Form>
                 <Form.Check
                   type="radio"
@@ -98,7 +115,8 @@ const Payment = (props) => {
                   }
                   onChange={handlePaymentSelection}
                   checked={paymentMethod === "wallet"}
-                  className="mb-3 pay-radio" style={{ textAlign: "left" }}
+                  className="mb-3 pay-radio"
+                  style={{ textAlign: "left" }}
                 />
                 <Form.Check
                   type="radio"
@@ -116,7 +134,8 @@ const Payment = (props) => {
                   }
                   onChange={handlePaymentSelection}
                   checked={paymentMethod === "vnpay"}
-                  className="pay-radio" style={{ textAlign: "left" }}
+                  className="pay-radio"
+                  style={{ textAlign: "left" }}
                 />
               </Form>
             </Card.Body>

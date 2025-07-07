@@ -11,7 +11,7 @@ function App() {
   return (
     <div fluid="lg" className="app-container">
       <Helmet>
-        <title>Carental</title>
+        <title>VIETCAR</title>
       </Helmet>
       <div className="header-container">
         <Header />

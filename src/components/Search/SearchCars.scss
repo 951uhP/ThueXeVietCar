@@ -67,6 +67,20 @@
       color: #fff;
     }
   }
+  .rent-now-btn {
+    margin-top: 0.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    transition: background 0.18s;
+    &:hover {
+      background: #218838;
+      color: #fff;
+    }
+  }
 }
 @media (max-width: 768px) {
   .car-card .car-body { padding: 1rem; }
