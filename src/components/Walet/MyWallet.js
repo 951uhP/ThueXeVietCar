@@ -45,7 +45,9 @@ function MyWallet() {
             amount: trans.amount || 0,
             transactionDate: trans.transactionDate || new Date().toISOString(),
           }));
-          setTransaction(sanitizedData);
+          // Sắp xếp theo thứ tự từ mới nhất đến cũ nhất
+          const sortedData = sanitizedData.sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate));
+          setTransaction(sortedData);
         } else {
           setTransaction([]);
           console.error("Response data is not valid.");
@@ -106,9 +108,11 @@ function MyWallet() {
       return transactionDate >= startDate && transactionDate <= endDate;
     });
 
-    setFilteredTransactions(filtered);
+    // Sắp xếp kết quả filter theo thứ tự từ mới nhất đến cũ nhất
+    const sortedFiltered = filtered.sort((a, b) => new Date(b.transactionDate) - new Date(a.transactionDate));
+    setFilteredTransactions(sortedFiltered);
 
-    if (filtered.length === 0) {
+    if (sortedFiltered.length === 0) {
       setNoResultsMessage("No transactions found for the selected date range.");
     } else {
       setNoResultsMessage("");

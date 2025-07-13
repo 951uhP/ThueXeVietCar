@@ -159,9 +159,6 @@ const Header = () => {
                           <NavDropdown.Item onClick={handleMyCars}>
                             My Cars
                           </NavDropdown.Item>
-                          <NavDropdown.Item onClick={handleReport}>
-                            My Report
-                          </NavDropdown.Item>
                           <NavDropdown.Item onClick={handleBooking}>
                             List of booking requests
                           </NavDropdown.Item>
