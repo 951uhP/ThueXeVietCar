@@ -84,7 +84,15 @@ function OwnerViewListBooking() {
             };
           });
 
-          setData(combinedData);
+          // Sắp xếp booking theo thứ tự từ mới nhất đến cũ nhất (theo id hoặc startDateTime)
+          const sortedData = combinedData.sort((a, b) => {
+            // Sắp xếp theo id (booking mới sẽ có id lớn hơn)
+            return b.id - a.id;
+            // Hoặc có thể sắp xếp theo startDateTime nếu muốn:
+            // return new Date(b.startDateTime) - new Date(a.startDateTime);
+          });
+
+          setData(sortedData);
         } else {
           console.error("Failed to fetch bookings");
           setData([]);

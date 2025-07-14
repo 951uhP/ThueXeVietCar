@@ -147,10 +147,18 @@ function MyBooking() {
             };
           });
 
-          setData(combinedData);
+          // Sắp xếp booking theo thứ tự từ mới nhất đến cũ nhất (theo id hoặc startDateTime)
+          const sortedData = combinedData.sort((a, b) => {
+            // Sắp xếp theo id (booking mới sẽ có id lớn hơn)
+            return b.id - a.id;
+            // Hoặc có thể sắp xếp theo startDateTime nếu muốn:
+            // return new Date(b.startDateTime) - new Date(a.startDateTime);
+          });
+
+          setData(sortedData);
 
           // Fetch feedback for completed bookings
-          const completedBookings = combinedData.filter(b => b.bookingStatus === "Completed");
+          const completedBookings = sortedData.filter(b => b.bookingStatus === "Completed");
           const feedbackPromises = completedBookings.map(b =>
             checkHasFeedback(b.id, account.id)
               .then(res => ({ bookingId: b.id, feedback: res?.data || null }))
